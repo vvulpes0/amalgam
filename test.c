@@ -170,9 +170,8 @@ main(void)
 	lcom = subcomm && (noid || comm);
 	fi_free(m);
 	m = NULL;
-	printf("              V  LV  TLV\n");
-	static char const * const format
-		= "%12s  %c   %c    %c\n";
+	printf("%12s%4s%4s %4s\n","","V","LV","TLV");
+	static char const * const format = "%12s%4c%4c%4c\n";
 	printf(format, "Commutative", b(comm), b(subcomm), b(lcom));
 	printf(format, "SF", b(sm_issf(e)), ' ', ' ');
 	printf(format, "DA", b(sm_isda(e)),
