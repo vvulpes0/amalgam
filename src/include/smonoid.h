@@ -258,7 +258,7 @@ int sm_istgd(struct eggbox * B);
  * Equivalent to <tt>sm_ese(B, sm_issemilat, x)</tt>.
  * @param[in] B the eggbox diagrams of local submonoids
  * @param x nonzero iff a solitary identity element should be ignored
- * @return nonzero iff the pattern is locally testable.
+ * @return nonzero iff the pattern is locally testable
  */
 int sm_islt(struct eggboxes * B, int x);
 
@@ -270,9 +270,103 @@ int sm_islt(struct eggboxes * B, int x);
  *
  * Equivalent to <tt>sm_ese(B, sm_issemilat, 1)</tt>.
  * @param[in] B the eggbox diagrams of local submonoids
- * @return nonzero iff the pattern is tier-based locally testable.
+ * @return nonzero iff the pattern is tier-based locally testable
  */
 int sm_istlt(struct eggboxes * B);
+
+/** @brief Decide if eggboxes represent a locally J-trivial pattern.
+ *
+ * A locally J-trivial pattern is one whose local submonoids
+ * are all J-trivial (PT).  This is a proper superclass of the
+ * class of languages of Dot-Depth One, so nonmembership here
+ * is nonmembership there as well.
+ *
+ * Equivalent to <tt>sm_ese(B, sm_ispt, x)</tt>.
+ * @param[in] B the eggbox diagrams of local submonoids
+ * @param x nonzero iff a solitary identity element should be ignored
+ * @return nonzero iff the pattern is locally J-trivial
+ */
+int sm_islj(struct eggboxes * B, int x);
+
+/** @brief Decide if eggboxes represent a tier-based locally J-trivial pattern.
+ *
+ * Is the projected subsemigroup locally J-trivial?
+ *
+ * Equivalent to <tt>sm_ese(B, sm_ispt, 1)</tt>.
+ * @param[in] B the eggbox diagrams of local submonoids
+ * @return nonzero iff the pattern is tier-based locally J-trivial
+ */
+int sm_istlj(struct eggboxes * B);
+
+/** @brief Decide if eggboxes represent a locally L-trivial pattern.
+ *
+ * A locally L-trivial pattern is one whose local submonoids
+ * are all L-trivial.
+ *
+ * Equivalent to <tt>sm_ese(B, sm_isltriv, x)</tt>.
+ * @param[in] B the eggbox diagrams of local submonoids
+ * @param x nonzero iff a solitary identity element should be ignored
+ * @return nonzero iff the pattern is locally L-trivial
+ */
+int sm_islltriv(struct eggboxes * B, int x);
+
+/** @brief Decide if eggboxes represent a tier-based locally L-trivial pattern.
+ *
+ * Is the projected subsemigroup locally L-trivial?
+ *
+ * Equivalent to <tt>sm_ese(B, sm_isltriv, 1)</tt>.
+ * @param[in] B the eggbox diagrams of local submonoids
+ * @return nonzero iff the pattern is tier-based locally L-trivial
+ */
+int sm_istlltriv(struct eggboxes * B);
+
+/** @brief Decide if eggboxes represent a locally R-trivial pattern.
+ *
+ * A locally R-trivial pattern is one whose local submonoids
+ * are all R-trivial.
+ *
+ * Equivalent to <tt>sm_ese(B, sm_isrtriv, x)</tt>.
+ * @param[in] B the eggbox diagrams of local submonoids
+ * @param x nonzero iff a solitary identity element should be ignored
+ * @return nonzero iff the pattern is locally R-trivial
+ */
+int sm_islrtriv(struct eggboxes * B, int x);
+
+/** @brief Decide if eggboxes represent a tier-based locally R-trivial pattern.
+ *
+ * Is the projected subsemigroup locally R-trivial?
+ *
+ * Equivalent to <tt>sm_ese(B, sm_isrtriv, 1)</tt>.
+ * @param[in] B the eggbox diagrams of local submonoids
+ * @return nonzero iff the pattern is tier-based locally R-trivial
+ */
+int sm_istlrtriv(struct eggboxes * B);
+
+/** @brief Decide if eggboxes represent a locally DA pattern.
+ *
+ * A locally DA pattern is one describable in first-order logic
+ * restricted to two variables using any combination of the
+ * general precedence operation and the successor operation.
+ *
+ * Equivalent to <tt>sm_ese(B, sm_isda, x)</tt>.
+ * @param[in] B the eggbox diagrams of local submonoids
+ * @param x nonzero iff a solitary identity element should be ignored
+ * @return nonzero iff the pattern is locally DA
+ */
+int sm_islda(struct eggboxes * B, int x);
+
+/** @brief Decide if eggboxes represent a tier-based locally R-trivial pattern.
+ *
+ * A tier-based locally DA pattern is one describable in
+ * first-order logic restricted to two variables
+ * using any combination of the general precedence operation
+ * and a single tier-successor operation.
+ *
+ * Equivalent to <tt>sm_ese(B, sm_isda, 1)</tt>.
+ * @param[in] B the eggbox diagrams of local submonoids
+ * @return nonzero iff the pattern is tier-based locally DA
+ */
+int sm_istlda(struct eggboxes * B);
 
 /** @brief Decide if an eggbox represents a semilattice.
  *

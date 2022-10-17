@@ -106,6 +106,12 @@ _mkaut(void)
 	return o;
 }
 
+static char
+b(int x)
+{
+	return x ? 'Y' : 'N';
+}
+
 int
 main(void)
 {
@@ -164,30 +170,32 @@ main(void)
 	lcom = subcomm && (noid || comm);
 	fi_free(m);
 	m = NULL;
-	printf("Commutative? %c\n", comm ? 'Y' : 'N');
-	printf("         SF? %c\n", sm_issf(e) ? 'Y' : 'N');
-	printf("         DA? %c\n", sm_isda(e) ? 'Y' : 'N');
-	printf("  L-trivial? %c\n", sm_isltriv(e) ? 'Y' : 'N');
-	printf("  R-trivial? %c\n", sm_isrtriv(e) ? 'Y' : 'N');
-	printf("         PT? %c\n", sm_ispt(e) ? 'Y' : 'N');
-	printf("       Band? %c\n", sm_isband(e) ? 'Y' : 'N');
-	printf("       ACom? %c\n", comm && sm_issf(e) ? 'Y' : 'N');
-	printf("Semilattice? %c\n", sm_issemilat(e) ? 'Y' : 'N');
-	printf("          1? %c\n", sm_istriv(e) ? 'Y' : 'N');
-	printf("      TLCom? %c\n", subcomm ? 'Y' : 'N');
-	printf("       TLTT? %c\n", subcomm && sm_issf(e) ? 'Y' : 'N');
-	printf("        TLT? %c\n", sm_istlt(boxes) ? 'Y' : 'N');
-	printf("        TGD? %c\n", sm_istgd(e) ? 'Y' : 'N');
-	printf("         TD? %c\n", sm_istd(e) ? 'Y' : 'N');
-	printf("         TK? %c\n", sm_istk(e) ? 'Y' : 'N');
-	printf("         TF? %c\n", sm_istf(e) ? 'Y' : 'N');
-	printf("       LCom? %c\n", lcom ? 'Y' : 'N');
-	printf("        LTT? %c\n", lcom && sm_issf(e) ? 'Y' : 'N');
-	printf("         LT? %c\n", sm_islt(boxes, noid) ? 'Y' : 'N');
-	printf("         GD? %c\n", sm_isgd(e,noid) ? 'Y' : 'N');
-	printf("          D? %c\n", sm_isd(e,noid) ? 'Y' : 'N');
-	printf("          K? %c\n", sm_isk(e,noid) ? 'Y' : 'N');
-	printf("          F? %c\n", sm_isf(e,noid) ? 'Y' : 'N');
+	printf("              V  LV  TLV\n");
+	static char const * const format
+		= "%12s  %c   %c    %c\n";
+	printf(format, "Commutative", b(comm), b(subcomm), b(lcom));
+	printf(format, "SF", b(sm_issf(e)), ' ', ' ');
+	printf(format, "DA", b(sm_isda(e)),
+	       b(sm_islda(boxes, noid)), b(sm_istlda(boxes)));
+	printf(format, "L-trivial", b(sm_isltriv(e)),
+	       b(sm_islltriv(boxes, noid)), b(sm_istlltriv(boxes)));
+	printf(format, "R-trivial", b(sm_isrtriv(e)),
+	       b(sm_islrtriv(boxes, noid)), b(sm_istlrtriv(boxes)));
+	printf(format, "Band", b(sm_isband(e)),
+	       b(sm_ese(boxes, sm_isband, noid)),
+	       b(sm_ese(boxes, sm_isband, 1)));
+	printf(format, "PT", b(sm_ispt(e)),
+	       b(sm_islj(boxes, noid)), b(sm_istlj(boxes)));
+	printf(format, "Acom", b(comm && sm_issf(e)),
+	       b(lcom && sm_issf(e)),
+	       b(subcomm && sm_issf(e)));
+	printf(format, "Semilattice", b(sm_issemilat(e)),
+	       b(sm_islt(boxes, noid)), b(sm_istlt(boxes)));
+	printf(format, "1", b(sm_istriv(e)),
+	       b(sm_isgd(e, noid)), b(sm_istgd(e)));
+	printf(format, "D", ' ', b(sm_isd(e, noid)), b(sm_istd(e)));
+	printf(format, "K", ' ', b(sm_isk(e, noid)), b(sm_istk(e)));
+	printf(format, "F", ' ', b(sm_isf(e, noid)), b(sm_istf(e)));
 	e = NULL;
 	sm_freelist(boxes);
 	boxes = NULL;

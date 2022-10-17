@@ -34,6 +34,10 @@ libbmatrix.a : bx_cycle.o bx_identity.o bx_transpose.o bx_free.o bx_eq.o
 libfinsa.a : fi_smonoid.o fi_copy.o fi_free.o
 	libtool -static ${LDFLAGS} -o ${.TARGET} ${.ALLSRC:M*.[ao]}
 
+libsmonoid.a : sm_istlda.o sm_islda.o
+libsmonoid.a : sm_istlltriv.o sm_islltriv.o
+libsmonoid.a : sm_istlrtriv.o sm_islrtriv.o
+libsmonoid.a : sm_istlj.o sm_islj.o
 libsmonoid.a : sm_istlt.o sm_islt.o
 libsmonoid.a : sm_ese.o sm_localsm.o sm_generate.o
 libsmonoid.a : sm_isacom.o sm_iscom.o sm_istf.o sm_isf.o
@@ -78,7 +82,11 @@ sm_isda.o : sm_isda.c smonoid.h uilist.h
 sm_isf.o : sm_isf.c smonoid.h uilist.h
 sm_isgd.o : sm_isgd.c smonoid.h uilist.h
 sm_isk.o : sm_isk.c smonoid.h uilist.h
+sm_islda.o : sm_islda.c smonoid.h
+sm_islj.o : sm_islj.c smonoid.h
 sm_islt.o : sm_islt.c smonoid.h
+sm_islltriv.o : sm_islltriv.c smonoid.h
+sm_islrtriv.o : sm_islrtriv.c smonoid.h
 sm_isltriv.o : sm_isltriv.c smonoid.h uilist.h
 sm_ispt.o : sm_ispt.c smonoid.h
 sm_isrtriv.o : sm_isrtriv.c smonoid.h uilist.h
@@ -88,7 +96,11 @@ sm_istd.o : sm_istd.c smonoid.h uilist.h
 sm_istf.o : sm_istf.c smonoid.h uilist.h
 sm_istgd.o : sm_istgd.c smonoid.h uilist.h
 sm_istk.o : sm_istk.c smonoid.h uilist.h
+sm_istlda.o : sm_istlda.c smonoid.h
+sm_istlj.o : sm_istlj.c smonoid.h
 sm_istlt.o : sm_istlt.c smonoid.h
+sm_istlltriv.o : sm_istlltriv.c smonoid.h
+sm_istlrtriv.o : sm_istlrtriv.c smonoid.h
 sm_istriv.o : sm_istriv.c smonoid.h uilist.h
 sm_localsm.o : sm_localsm.c smonoid.h finsa.h bmatrix.h uilist.h
 sm_lrel.o : sm_rrel.c smonoid.h finsa.h bmatrix.h uilist.h
