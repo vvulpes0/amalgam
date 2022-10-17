@@ -59,6 +59,10 @@ sm_generate(struct uilist * v, struct finsa * m)
 		++i;
 		p = p->next;
 	}
+	for (j = i; j < c->count; ++j)
+	{
+		bx_free(c->graphs[j]);
+	}
 	c->count = i;
 
 	/* for each graph, move the desired rows to the front
@@ -84,6 +88,10 @@ sm_generate(struct uilist * v, struct finsa * m)
 			_rename(c->graphs[i]->vecs[k], v);
 			++k;
 			p = p->next;
+		}
+		for (; k < c->graphs[i]->size; ++k)
+		{
+			ui_free(c->graphs[i]->vecs[k]);
 		}
 		c->graphs[i]->size = c->count;
 	}
