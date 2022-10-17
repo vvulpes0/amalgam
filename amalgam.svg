@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   width="230mm"
+   height="60mm"
+   viewBox="0 0 230 60"
+   version="1.1"
+   id="svg5"
+   inkscape:export-filename="amalgam.png"
+   inkscape:export-xdpi="22.086956"
+   inkscape:export-ydpi="22.086956"
+   inkscape:version="1.2 (dc2aeda, 2022-05-15)"
+   sodipodi:docname="amalgam.svg"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <sodipodi:namedview
+     id="namedview7"
+     pagecolor="#ffffff"
+     bordercolor="#999999"
+     borderopacity="1"
+     inkscape:showpageshadow="0"
+     inkscape:pageopacity="0"
+     inkscape:pagecheckerboard="0"
+     inkscape:deskcolor="#d1d1d1"
+     inkscape:document-units="mm"
+     showgrid="false"
+     inkscape:zoom="0.62632581"
+     inkscape:cx="437.47199"
+     inkscape:cy="166.04776"
+     inkscape:window-width="1199"
+     inkscape:window-height="696"
+     inkscape:window-x="0"
+     inkscape:window-y="37"
+     inkscape:window-maximized="0"
+     inkscape:current-layer="layer1" />
+  <defs
+     id="defs2" />
+  <g
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer"
+     id="layer1"
+     transform="translate(-4.0447073,-114.09526)">
+    <rect
+       style="fill:#ffffff;stroke:none;stroke-width:1;stroke-dasharray:none;paint-order:markers fill stroke"
+       id="rect5923"
+       width="230"
+       height="60"
+       x="4.0447073"
+       y="114.09526"
+       ry="1.3877788e-16" />
+    <g
+       id="g6006"
+       transform="translate(-1.0583333)">
+      <circle
+         style="fill:none;stroke:#000000;stroke-width:2;stroke-dasharray:none;paint-order:markers fill stroke"
+         id="circle5588"
+         cx="29.416594"
+         cy="144.09526"
+         r="4" />
+      <path
+         id="circle5646"
+         style="fill:none;stroke:#000000;stroke-width:2;stroke-dasharray:none;paint-order:markers fill stroke"
+         d="m 33.416595,136.09525 c 0,2.20914 -1.79086,4 -4,4 -2.20914,0 -4,-1.79086 -4,-4"
+         sodipodi:nodetypes="csc" />
+      <path
+         style="fill:none;stroke:#000000;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-dasharray:none;stroke-opacity:1"
+         d="m 29.416595,148.09525 v 6"
+         id="path5649" />
+      <path
+         style="fill:none;stroke:#000000;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-dasharray:none;stroke-opacity:1"
+         d="m 32.416595,151.09525 h -6"
+         id="path5653" />
+      <rect
+         style="fill:none;stroke:#000000;stroke-width:2;stroke-dasharray:none;paint-order:markers fill stroke"
+         id="rect5655"
+         width="24"
+         height="24"
+         x="-93.090057"
+         y="110.69142"
+         ry="1.3877788e-16"
+         transform="rotate(-45)" />
+      <path
+         style="fill:none;stroke:#000000;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-dasharray:none;stroke-opacity:1"
+         d="m 29.416595,127.1247 v -8"
+         id="path5657" />
+      <path
+         style="fill:none;stroke:#000000;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-dasharray:none;stroke-opacity:1"
+         d="m 29.416595,169.06582 v -8.00001"
+         id="path5659" />
+    </g>
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-variant:normal;font-weight:500;font-stretch:normal;font-size:33.8667px;line-height:1.25;font-family:Montserrat;-inkscape-font-specification:'Montserrat Medium';text-align:center;text-anchor:middle;fill:#000000;stroke:none;stroke-width:0.264583"
+       x="138.2677"
+       y="155.94859"
+       id="text5844"><tspan
+         sodipodi:role="line"
+         id="tspan5842"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:33.8667px;font-family:Montserrat;-inkscape-font-specification:Montserrat;fill:#000000;stroke:none;stroke-width:0.264583"
+         x="138.2677"
+         y="155.94859">AMALGAM</tspan></text>
+  </g>
+</svg>
