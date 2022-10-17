@@ -1,7 +1,7 @@
 #include "bmatrix.h"
 #include "uilist.h"
 struct uilist *
-bx_vmmul(struct uilist * v, struct bmatrix * n)
+bx_mvmul(struct bmatrix * n, struct uilist * v)
 {
 	struct uilist * r = NULL;
 	struct bmatrix * m = bx_copy(n);
@@ -9,8 +9,9 @@ bx_vmmul(struct uilist * v, struct bmatrix * n)
 	if (!bx_transpose(m)) { bx_free(m); return NULL; }
 	while (v)
 	{
-		if (v->value >= m->size) { continue; } /* invalid */
-		ui_merge(v, m->vecs[v->value]);
+		if (v->value >= m->size) { break; } /* invalid */
+		r = ui_merge(r, m->vecs[v->value]);
+		v = v->next;
 	}
 	bx_free(m);
 	return r;

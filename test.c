@@ -25,7 +25,7 @@ print_matrix(struct bmatrix * m)
 	}
 }
 
-/*
+
 static _Bool testm[3][4][4] = {
 	{{0,0,1,0},
 	 {0,0,0,0},
@@ -43,7 +43,7 @@ static _Bool testm[3][4][4] = {
 	 {0,0,1,0},
 	},
 };
-*/
+/*
 static _Bool testm[3][5][5] = {
 	{{0,1,0,0,0},
 	 {0,0,0,0,1},
@@ -64,6 +64,7 @@ static _Bool testm[3][5][5] = {
 	 {0,0,0,0,1},
 	},
 };
+*/
 
 static struct finsa *
 _mkaut(void)
@@ -111,10 +112,14 @@ main(void)
 	struct finsa * m = _mkaut();
 	struct finsa * s;
 	struct eggbox * e;
+	struct eggboxes * boxes;
 	struct eggbox * p;
 	struct uilist * x;
 	size_t i;
 	int noid;
+	int comm;
+	int subcomm;
+	int lcom;
 	if (!m) { return 1; }
 	for (i = 0; i < m->count; ++i)
 	{
@@ -130,8 +135,9 @@ main(void)
 		print_matrix(m->graphs[i]);
 		printf("\n");
 	}
-	e = sm_eggbox(m);
-	if (!e) { printf("OY\n"); }
+	boxes = sm_localsm(m, &subcomm);
+	if (!boxes) { printf("OY\n"); }
+	e = boxes->box;
 	p = e;
 	while (p)
 	{
@@ -154,24 +160,36 @@ main(void)
 		p = p->next;
 	}
 	noid = !m->finals;
+	comm = sm_iscom(m);
+	lcom = subcomm && (noid || comm);
 	fi_free(m);
 	m = NULL;
+	printf("Commutative? %c\n", comm ? 'Y' : 'N');
 	printf("         SF? %c\n", sm_issf(e) ? 'Y' : 'N');
 	printf("         DA? %c\n", sm_isda(e) ? 'Y' : 'N');
 	printf("  L-trivial? %c\n", sm_isltriv(e) ? 'Y' : 'N');
 	printf("  R-trivial? %c\n", sm_isrtriv(e) ? 'Y' : 'N');
 	printf("         PT? %c\n", sm_ispt(e) ? 'Y' : 'N');
 	printf("       Band? %c\n", sm_isband(e) ? 'Y' : 'N');
+	printf("       ACom? %c\n", comm && sm_issf(e) ? 'Y' : 'N');
 	printf("Semilattice? %c\n", sm_issemilat(e) ? 'Y' : 'N');
 	printf("          1? %c\n", sm_istriv(e) ? 'Y' : 'N');
+	printf("      TLCom? %c\n", subcomm ? 'Y' : 'N');
+	printf("       TLTT? %c\n", subcomm && sm_issf(e) ? 'Y' : 'N');
+	printf("        TLT? %c\n", sm_istlt(boxes) ? 'Y' : 'N');
 	printf("        TGD? %c\n", sm_istgd(e) ? 'Y' : 'N');
 	printf("         TD? %c\n", sm_istd(e) ? 'Y' : 'N');
 	printf("         TK? %c\n", sm_istk(e) ? 'Y' : 'N');
 	printf("         TF? %c\n", sm_istf(e) ? 'Y' : 'N');
+	printf("       LCom? %c\n", lcom ? 'Y' : 'N');
+	printf("        LTT? %c\n", lcom && sm_issf(e) ? 'Y' : 'N');
+	printf("         LT? %c\n", sm_islt(boxes, noid) ? 'Y' : 'N');
 	printf("         GD? %c\n", sm_isgd(e,noid) ? 'Y' : 'N');
 	printf("          D? %c\n", sm_isd(e,noid) ? 'Y' : 'N');
 	printf("          K? %c\n", sm_isk(e,noid) ? 'Y' : 'N');
 	printf("          F? %c\n", sm_isf(e,noid) ? 'Y' : 'N');
-	sm_free(e);
+	e = NULL;
+	sm_freelist(boxes);
+	boxes = NULL;
 	return 0;
 }

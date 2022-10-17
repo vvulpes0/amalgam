@@ -37,6 +37,15 @@ struct finsa
 	size_t count;
 };
 
+/** @brief Deep copy an automaton. \f$\mathcal{O}(n)\f$
+ *
+ * Allocate sufficient memory for a new automaton and return the result.
+ * The result is NULL upon failure or if \p M were of zero size.
+ * @param[in] M the automaton to copy
+ * @return a deep copy of \p M, or NULL upon failure
+ */
+struct finsa * fi_copy(struct finsa * M);
+
 /** @brief Free an automaton and all its internal data.
  *
  * Every graph is free, then the finals, then the structure itself.

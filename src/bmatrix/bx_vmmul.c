@@ -7,8 +7,9 @@ bx_vmmul(struct uilist * v, struct bmatrix * m)
 	if (!m || !m->vecs) { return NULL; }
 	while (v)
 	{
-		if (v->value >= m->size) { continue; } /* invalid */
-		ui_merge(v, m->vecs[v->value]);
+		if (v->value >= m->size) { break; } /* invalid */
+		r = ui_merge(r, m->vecs[v->value]);
+		v = v->next;
 	}
 	return r;
 }

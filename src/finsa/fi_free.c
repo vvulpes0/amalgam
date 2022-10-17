@@ -6,6 +6,7 @@ void
 fi_free(struct finsa * m)
 {
 	size_t i;
+	if (!m) { return; }
 	for (i = 0; i < m->count; ++i)
 	{
 		bx_free(m->graphs[i]);

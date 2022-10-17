@@ -14,8 +14,7 @@ LDFLAGS+= -L$(.OBJDIR)
 .c.o :
 	$(CC) $(CFLAGS) -o $(.TARGET) -c $(.IMPSRC)
 
-.PHONY : all
-all : doc test
+.MAIN : test
 
 .PHONY : doc
 doc : Doxyfile
@@ -32,14 +31,17 @@ libbmatrix.a : bx_emul.o bx_add.o bx_copy.o
 libbmatrix.a : bx_cycle.o bx_identity.o bx_transpose.o bx_free.o bx_eq.o
 	libtool -static ${LDFLAGS} -o ${.TARGET} ${.ALLSRC:M*.o}
 
-libfinsa.a : fi_smonoid.o fi_free.o
+libfinsa.a : fi_smonoid.o fi_copy.o fi_free.o
 	libtool -static ${LDFLAGS} -o ${.TARGET} ${.ALLSRC:M*.[ao]}
 
-libsmonoid.a : sm_istf.o sm_isf.o
+libsmonoid.a : sm_istlt.o sm_islt.o
+libsmonoid.a : sm_ese.o sm_localsm.o sm_generate.o
+libsmonoid.a : sm_isacom.o sm_iscom.o sm_istf.o sm_isf.o
 libsmonoid.a : sm_istk.o sm_isk.o sm_istd.o sm_isd.o sm_istgd.o sm_isgd.o
 libsmonoid.a : sm_istriv.o sm_issemilat.o sm_isband.o sm_isda.o
 libsmonoid.a : sm_issf.o sm_ispt.o sm_isltriv.o sm_isrtriv.o
-libsmonoid.a : sm_eggbox.o sm_lrel.o sm_rrel.o sm_free.o
+libsmonoid.a : sm_eggbox.o sm_lrel.o sm_rrel.o
+libsmonoid.a : sm_freelist.o sm_free.o
 	libtool -static ${LDFLAGS} -o ${.TARGET} ${.ALLSRC:M*.o}
 
 libuilist.a : ui_merge.o ui_intersect.o ui_has_intersect.o
@@ -59,27 +61,36 @@ bx_reachability.o : bx_reachability.c bmatrix.h
 bx_transpose.o : bx_transpose.c bmatrix.h uilist.h
 bx_vmmul.o : bx_vmmul.c bmatrix.h uilist.h
 
+fi_copy.o : fi_copy.c finsa.h bmatrix.h uilist.h
 fi_free.o : fi_free.c finsa.h bmatrix.h uilist.h
 fi_smonoid.o : fi_smonoid.c finsa.h bmatrix.h uilist.h
 
 sm_eggbox.o : sm_eggbox.c smonoid.h bmatrix.h uilist.h
+sm_ese.o : sm_ese.c smonoid.h
 sm_free.o : sm_free.c smonoid.h uilist.h
+sm_freelist.o : sm_freelist.c smonoid.h
+sm_generate.o : sm_generate.c smonoid.h finsa.h bmatrix.h uilist.h
+sm_isacom.o : sm_isacom.c smonoid.h uilist.h
 sm_isband.o : sm_isband.c smonoid.h uilist.h
+sm_iscom.o : sm_iscom.c smonoid.h uilist.h
 sm_isd.o : sm_isd.c smonoid.h uilist.h
 sm_isda.o : sm_isda.c smonoid.h uilist.h
 sm_isf.o : sm_isf.c smonoid.h uilist.h
 sm_isgd.o : sm_isgd.c smonoid.h uilist.h
 sm_isk.o : sm_isk.c smonoid.h uilist.h
+sm_islt.o : sm_islt.c smonoid.h
 sm_isltriv.o : sm_isltriv.c smonoid.h uilist.h
 sm_ispt.o : sm_ispt.c smonoid.h
-sm_isrtriv.o : sm_isltriv.c smonoid.h uilist.h
+sm_isrtriv.o : sm_isrtriv.c smonoid.h uilist.h
 sm_issemilat.o : sm_issemilat.c smonoid.h
 sm_issf.o : sm_issf.c smonoid.h uilist.h
 sm_istd.o : sm_istd.c smonoid.h uilist.h
 sm_istf.o : sm_istf.c smonoid.h uilist.h
 sm_istgd.o : sm_istgd.c smonoid.h uilist.h
 sm_istk.o : sm_istk.c smonoid.h uilist.h
+sm_istlt.o : sm_istlt.c smonoid.h
 sm_istriv.o : sm_istriv.c smonoid.h uilist.h
+sm_localsm.o : sm_localsm.c smonoid.h finsa.h bmatrix.h uilist.h
 sm_lrel.o : sm_rrel.c smonoid.h finsa.h bmatrix.h uilist.h
 sm_rrel.o : sm_rrel.c smonoid.h finsa.h bmatrix.h uilist.h
 
