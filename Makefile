@@ -2,13 +2,13 @@
 .SUFFIXES : .c .o
 
 .PATH : $(.CURDIR)/src
-.PATH : $(.CURDIR)/src/include
+.PATH : $(.CURDIR)/include/amalgam
 .PATH : $(.CURDIR)/src/bmatrix
 .PATH : $(.CURDIR)/src/finsa
 .PATH : $(.CURDIR)/src/smonoid
 .PATH : $(.CURDIR)/src/uilist
 
-CFLAGS+= -I $(.CURDIR)/src/include
+CFLAGS+= -I$(.CURDIR)/include/amalgam
 LDFLAGS+= -L$(.OBJDIR)
 
 .c.o :

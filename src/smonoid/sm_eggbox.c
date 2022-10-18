@@ -101,7 +101,6 @@ fill_box(struct eggbox * e, struct ebvec * rows, struct ebvec * cols,
 	struct uilist * p;
 	struct uilist * t;
 	struct uilist * z;
-	struct uilist ** g;
 	size_t c;
 	size_t r;
 	size_t s;
