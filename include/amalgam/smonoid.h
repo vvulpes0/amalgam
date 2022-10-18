@@ -1,4 +1,4 @@
-/** @file smonoid.h
+/** @file amalgam/smonoid.h
  * @brief Analysis of syntactic monoids.
  * @author Dakotah Lambert
  * @version 0.1.0
@@ -23,8 +23,8 @@
  * (tier-based) locally (threshold) testable, then you will instead
  * need to use sm_localsm().
  */
-#ifndef SMONOID_H
-#define SMONOID_H
+#ifndef AMALGAM_SMONOID_H
+#define AMALGAM_SMONOID_H
 #ifdef __cplusplus
 extern "C" {
 #if 0
@@ -164,26 +164,26 @@ int sm_ese(struct eggboxes * B, int(*f)(struct eggbox *), int x);
  */
 int sm_istriv(struct eggbox * B);
 
-/** @brief Decide if an eggbox represents a (co-)finite pattern.
+/** @brief Decide if an eggbox represents a nilpotent pattern.
  *
- * A pattern is (co-)finite iff either it or its complement
- * consists of a finite number of words.
+ * A pattern is nilpotent iff it is (co-)finite:
+ * either it or its complement consists of a finite number of words.
  * @param[in] B the eggbox diagram
  * @param x nonzero iff a solitary identity element should be ignored
- * @return nonzero iff the pattern is (co-)finite
+ * @return nonzero iff the pattern is nilpotent
  */
-int sm_isf(struct eggbox * B, int x);
+int sm_isn(struct eggbox * B, int x);
 
-/** @brief Decide if an eggbox represents
- * a tier-based definite pattern.
+/** @brief Decide if an eggbox represents a tier-based nilpotent pattern.
  *
- * A pattern is tier-based (co-)finite iff either it or its complement
- * consists of a finite number of words over some tier.
+ * A pattern is tier-based nilpotent iff either it or its complement
+ * consists of a finite number of words over some tier,
+ * and non-tier symbols can be freely inserted and deleted.
  * A solitary identity element is always ignored.
  * @param[in] B the eggbox diagram
- * @return nonzero iff the pattern is tier-based (co-)finite
+ * @return nonzero iff the pattern is tier-based nilpotent
  */
-int sm_istf(struct eggbox * B);
+int sm_istn(struct eggbox * B);
 
 /** @brief Decide if an eggbox represents a definite pattern.
  *

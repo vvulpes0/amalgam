@@ -1,7 +1,7 @@
 #include "smonoid.h"
 #include "uilist.h"
 int
-sm_isf(struct eggbox * b, int x)
+sm_isn(struct eggbox * b, int x)
 {
 	size_t r;
 	size_t c;

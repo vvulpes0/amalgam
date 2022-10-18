@@ -1,4 +1,4 @@
-/** @file uilist.h
+/** @file amalgam/uilist.h
  * @brief Linked lists of unsigned ints
  * @author Dakotah Lambert
  * @version 0.1.0
@@ -11,8 +11,8 @@
  * These are sufficient for indexing any portable array in C99,
  * while also remaining relatively compact.
  */
-#ifndef UILIST_H
-#define UILIST_H
+#ifndef AMALGAM_UILIST_H
+#define AMALGAM_UILIST_H
 #ifdef __cplusplus
 extern "C" {
 #if 0
@@ -42,6 +42,14 @@ struct uilist * ui_copy(struct uilist * p);
  * @param p the list
  */
 void ui_free(struct uilist * p);
+
+/** @brief Find an element. \f$\mathcal{O}(n)\f$.
+ *
+ * @pre \p a is sorted
+ * @param[in] a the ascending list to search
+ * @return a pointer to the node containing \p x, or NULL
+ */
+struct uilist * ui_find(struct uilist * a, unsigned int x);
 
 /** @brief Determine if ascending lists intersect. \f$\mathcal{O}(n)\f$.
  *
@@ -88,6 +96,19 @@ struct uilist * ui_intersect(struct uilist * a, struct uilist * b);
  * @return a pointer to the new head of the merged list
  */
 struct uilist * ui_merge(struct uilist * a, struct uilist * b);
+
+/** @brief Insert an element into a list. \f$\mathcal{O}(n)\f$.
+ *
+ * Expand \p a to contain the element x.
+ * If \p a were non-NULL and the result is successful,
+ * the return value is \p a itself.
+ * @pre \p a is sorted
+ * @post outputs are sorted
+ * @param[in,out] a the accumulating list
+ * @param x the element to insert
+ * @return a pointer to the new head of the merged list
+ */
+struct uilist * ui_insert(struct uilist * a, unsigned int x);
 #ifdef __cplusplus
 }
 #endif

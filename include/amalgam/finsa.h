@@ -53,7 +53,30 @@ struct finsa * fi_copy(struct finsa * M);
  */
 void fi_free(struct finsa * M);
 
-/** Construct a syntactic monoid.
+/** @brief Minimize an automaton.
+ *
+ * Merge Nerode-equivalent states.
+ * @pre \p M is deterministic
+ * @param[in,out] M the automaton
+ * @return nonzero iff no error was encountered
+ */
+int fi_nerode(struct finsa * M);
+
+/** @brief Retain only specific nodes.
+ *
+ * @param[in,out] M the automaton
+ * @param[in] V the states to retain
+ */
+void fi_restrict(struct finsa * M, struct uilist * V);
+
+/** @brief Propagate past empty transitions.
+ *
+ * @param[in,out] M the automaton
+ * @param e the character index of an empty transition
+ */
+void fi_rmeps(struct finsa * M, int e);
+
+/** @brief Construct a syntactic monoid.
  *
  * The syntactic monoid is an algebraic structure
  * derived from a Nerode-minimal automaton.

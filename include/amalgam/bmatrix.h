@@ -1,4 +1,4 @@
-/** @file bmatrix.h
+/** @file amalgam/bmatrix.h
  * @brief Operations on sparse square matrices.
  * @author Dakotah Lambert
  * @version 0.1.0
@@ -18,8 +18,8 @@
  * \f$E\f$ is the number of set entries, and
  * \f$n\f$ is \f$V+E\f$
  */
-#ifndef BMATRIX_H
-#define BMATRIX_H
+#ifndef AMALGAM_BMATRIX_H
+#define AMALGAM_BMATRIX_H
 #ifdef __cplusplus
 extern "C" {
 #if 0

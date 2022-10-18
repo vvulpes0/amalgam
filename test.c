@@ -1,7 +1,5 @@
-#include "bmatrix.h"
-#include "finsa.h"
-#include "smonoid.h"
-#include "uilist.h"
+#include <amalgam/amalgam.h>
+#include <amalgam/io/att.h>
 #include <stdlib.h>
 #include <stdio.h>
 void
@@ -25,87 +23,6 @@ print_matrix(struct bmatrix * m)
 	}
 }
 
-
-static _Bool testm[3][4][4] = {
-	{{0,0,1,0},
-	 {0,0,0,0},
-	 {0,0,1,0},
-	 {0,0,1,0},
-	},
-	{{0,1,0,0},
-	 {0,1,0,0},
-	 {0,0,0,1},
-	 {0,0,0,1},
-	},
-	{{0,1,0,0},
-	 {0,1,0,0},
-	 {0,0,1,0},
-	 {0,0,1,0},
-	},
-};
-/*
-static _Bool testm[3][5][5] = {
-	{{0,1,0,0,0},
-	 {0,0,0,0,1},
-	 {0,0,1,0,0},
-	 {0,0,1,0,0},
-	 {0,0,0,0,1},
-	},
-	{{0,0,0,0,1},
-	 {0,0,0,1,0},
-	 {0,0,0,1,0},
-	 {0,0,0,1,0},
-	 {0,0,0,0,1},
-	},
-	{{1,0,0,0,0},
-	 {0,1,0,0,0},
-	 {0,0,1,0,0},
-	 {0,0,0,1,0},
-	 {0,0,0,0,1},
-	},
-};
-*/
-
-static struct finsa *
-_mkaut(void)
-{
-	struct finsa * o = malloc(sizeof(*o));
-	size_t i;
-	size_t j;
-	size_t k;
-	size_t s;
-	struct uilist * t;
-	if (!o) { return NULL; }
-	o->count = sizeof(testm) / sizeof(testm[0]);
-	o->finals = NULL;
-	o->graphs = malloc(o->count * sizeof(*(o->graphs)));
-	if (!o->graphs) { free(o); return NULL; }
-	for (i = 0; i < o->count; ++i) { o->graphs[i] = NULL; }
-	for (i = 0; i < o->count; ++i)
-	{
-		s = sizeof(testm[0])/sizeof(testm[0][0]);
-		o->graphs[i] = malloc(sizeof(*(o->graphs[i])));
-		if (!o->graphs[i]) { fi_free(o); return NULL; }
-		o->graphs[i]->size = s;
-		o->graphs[i]->vecs
-			= malloc(s * sizeof(*(o->graphs[i]->vecs)));
-		for (j = 0; j < s; ++j) { o->graphs[i]->vecs[j] = NULL; }
-		for (j = 0; j < s; ++j)
-		{
-			for (k = s - 1; k + 1 > 0; --k)
-			{
-				if (!testm[i][j][k]) { continue; }
-				t = malloc(sizeof(*t));
-				if (!t) { fi_free(o); return NULL; }
-				t->next = o->graphs[i]->vecs[j];
-				t->value = k;
-				o->graphs[i]->vecs[j] = t;
-			}
-		}
-	}
-	return o;
-}
-
 static char
 b(int x)
 {
@@ -115,7 +32,8 @@ b(int x)
 int
 main(void)
 {
-	struct finsa * m = _mkaut();
+	/* struct finsa * m = _mkaut(); */
+	struct finsa * m = fi_fromatt(stdin);
 	struct finsa * s;
 	struct eggbox * e;
 	struct eggboxes * boxes;
@@ -126,7 +44,9 @@ main(void)
 	int comm;
 	int subcomm;
 	int lcom;
+	while (!feof(stdin)) { fgetc(stdin); }
 	if (!m) { return 1; }
+	fi_nerode(m);
 	for (i = 0; i < m->count; ++i)
 	{
 		print_matrix(m->graphs[i]);
@@ -194,7 +114,7 @@ main(void)
 	       b(sm_isgd(e, noid)), b(sm_istgd(e)));
 	printf(format, "D", ' ', b(sm_isd(e, noid)), b(sm_istd(e)));
 	printf(format, "K", ' ', b(sm_isk(e, noid)), b(sm_istk(e)));
-	printf(format, "F", ' ', b(sm_isf(e, noid)), b(sm_istf(e)));
+	printf(format, "F", ' ', b(sm_isn(e, noid)), b(sm_istn(e)));
 	e = NULL;
 	sm_freelist(boxes);
 	boxes = NULL;

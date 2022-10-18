@@ -203,7 +203,11 @@ sm_eggbox(struct finsa * m)
 			sm_free(o);
 			return NULL;
 		}
-		for (i = 0; i < s; ++i) { e->eggs[i] = NULL; }
+		for (i = 0; i < s; ++i)
+		{
+			e->eggs[i] = NULL;
+			e->groups[i] = 0;
+		}
 		fill_box(e, rows, cols, m);
 		for (i = 0; i < e->rows; ++i)
 		{
