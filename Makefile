@@ -34,7 +34,7 @@ libbmatrix.a : bx_emul.o bx_add.o bx_copy.o
 libbmatrix.a : bx_cycle.o bx_identity.o bx_transpose.o bx_free.o bx_eq.o
 	libtool -static ${LDFLAGS} -o ${.TARGET} ${.ALLSRC:M*.o}
 
-libfinsa.a : fi_fromatt.o fi_rmeps.o fi_smonoid.o fi_nerode.o
+libfinsa.a : fi_fromatt.o fi_rmeps.o fi_trim.o fi_smonoid.o fi_nerode.o
 libfinsa.a : fi_restrict.o fi_copy.o fi_free.o
 	libtool -static ${LDFLAGS} -o ${.TARGET} ${.ALLSRC:M*.[ao]}
 
@@ -74,6 +74,7 @@ fi_free.o : fi_free.c finsa.h bmatrix.h uilist.h
 fi_fromatt.o : fi_fromatt.c finsa.h bmatrix.h uilist.h
 fi_restrict.o : fi_restrict.c finsa.h bmatrix.h uilist.h
 fi_smonoid.o : fi_smonoid.c finsa.h bmatrix.h uilist.h
+fi_trim.o : fi_trim.c finsa.h bmatrix.h
 
 sm_eggbox.o : sm_eggbox.c smonoid.h bmatrix.h uilist.h
 sm_ese.o : sm_ese.c smonoid.h

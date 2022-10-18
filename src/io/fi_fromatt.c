@@ -7,14 +7,16 @@
 #include <stdlib.h>
 #include <string.h>
 /** @private */
-struct translist {
+struct translist
+{
 	struct translist * next;
 	unsigned int src;
 	unsigned int dst;
 	unsigned int sym;
 };
 /** @private */
-struct strlist {
+struct strlist
+{
 	struct strlist * next;
 	char * str;
 };
@@ -214,7 +216,23 @@ fi_fromatt(FILE * f)
 	_freestrlist(states);
 	_freestrlist(symbols);
 	o = _mkaut(trans, nc + 1, ns + 1);
-	if (o) { fi_rmeps(o, 0); o->finals = finals; finals = NULL; }
+	if (o)
+	{
+		fi_rmeps(o, 0);
+		o->finals = finals;
+		finals = NULL;
+		if (!o->count && o->finals)
+		{
+			o->count = 1;
+			o->graphs[0] = bx_identity(1);
+		}
+		if (!o->graphs[0] || (!o->count && !o->finals))
+		{
+			o->count = 0;
+			fi_free(o);
+			o = NULL;
+		}
+	}
 	_freetranslist(trans);
 	ui_free(finals);
 	return o;

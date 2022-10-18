@@ -69,6 +69,13 @@ int fi_nerode(struct finsa * M);
  */
 void fi_restrict(struct finsa * M, struct uilist * V);
 
+/** @brief Retain only nodes reachable from the start.
+ *
+ * @param[in,out] M the automaton
+ * @return nonzero iff trimming successful
+ */
+int fi_trim(struct finsa * M);
+
 /** @brief Propagate past empty transitions.
  *
  * @param[in,out] M the automaton

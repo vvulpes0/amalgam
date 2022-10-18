@@ -46,6 +46,7 @@ main(void)
 	int lcom;
 	while (!feof(stdin)) { fgetc(stdin); }
 	if (!m) { return 1; }
+	fi_trim(m);
 	fi_nerode(m);
 	for (i = 0; i < m->count; ++i)
 	{
