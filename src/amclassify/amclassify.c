@@ -1,29 +1,7 @@
 #include <amalgam/amalgam.h>
 #include <amalgam/io/att.h>
-#include <amalgam/io/dot.h>
 #include <stdlib.h>
 #include <stdio.h>
-void
-print_matrix(struct bmatrix * m)
-{
-	struct uilist * p;
-	size_t i;
-	size_t j;
-	if (!m || !m->vecs) { return; }
-	for (i = 0; i < m->size; ++i)
-	{
-		p = m->vecs[i];
-		for (j = 0; j < m->size; ++j)
-		{
-			if (!p) { printf("0 "); continue; }
-			if (p->value > j) { printf("0 "); continue; }
-			printf("1 ");
-			p = p->next;
-		}
-		if (p) { printf(":: %p", p); }
-		printf("\n");
-	}
-}
 
 static char
 b(int x)
@@ -49,34 +27,19 @@ main(void)
 	int lcom;
 	int issl = 0;
 	int istsl = 0;
+	/* read the rest of stdin so writers don't die */
 	while (!feof(stdin)) { fgetc(stdin); }
 	if (!m) { return 1; }
 	u.next = NULL; u.value = 0;
+	/* keep the connected component containing the initial state */
 	fi_trim(m);
-	for (i = 0; i < m->count; ++i)
-	{
-		print_matrix(m->graphs[i]);
-		printf("\n");
-	}
-	for (x = m->finals; x; x = x->next ) { printf("%u ", x->value); }
-	printf("\n\n");
+	/* determinize */
 	s = fi_powerset(m, &u, HAS_FINAL);
 	fi_free(m);
 	m = s;
 	s = NULL;
-	for (i = 0; i < m->count; ++i)
-	{
-		print_matrix(m->graphs[i]);
-		printf("\n");
-	}
-	for (x = m->finals; x; x = x->next ) { printf("%u ", x->value); }
-	printf("\n\n");
+	/* minimize and trim */
 	fi_nerode(m);
-	for (i = 0; i < m->count; ++i)
-	{
-		print_matrix(m->graphs[i]);
-		printf("\n");
-	}
 	issl = fi_issl(m);
 	s = fi_smonoid(m);
 	fi_project(m);
@@ -85,36 +48,10 @@ main(void)
 	fi_free(m);
 	m = s;
 	s = NULL;
-	for (i = 0; i < m->count; ++i)
-	{
-		print_matrix(m->graphs[i]);
-		printf("\n");
-	}
+	/* the main structure: local eggboxes */
 	boxes = sm_localsm(m, &subcomm);
-	if (!boxes) { printf("OY\n"); }
+	if (!boxes) { return EXIT_FAILURE; }
 	e = boxes->box;
-	sm_todot(stderr, e);
-	p = e;
-	while (p)
-	{
-		printf("<--\n");
-		for (size_t r = 0; r < p->rows; ++r)
-		{
-			for (size_t c = 0; c < p->cols; ++c)
-			{
-				x = p->eggs[r * p->cols + c];
-				while (x)
-				{
-					printf("%3u", x->value);
-					x = x->next;
-				}
-				printf("|");
-			}
-			printf("\n");
-		}
-		printf("-->\n");
-		p = p->next;
-	}
 	noid = !m->finals;
 	comm = sm_iscom(m);
 	lcom = subcomm && (noid || comm);

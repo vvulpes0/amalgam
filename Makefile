@@ -1,9 +1,9 @@
 .SUFFIXES :
 .SUFFIXES : .c .o
 
-.PATH : $(.CURDIR)/src
 .PATH : $(.CURDIR)/include/amalgam
 .PATH : $(.CURDIR)/include/amalgam/io
+.PATH : $(.CURDIR)/src/amclassify
 .PATH : $(.CURDIR)/src/bmatrix
 .PATH : $(.CURDIR)/src/finsa
 .PATH : $(.CURDIR)/src/smonoid
@@ -17,11 +17,16 @@ LDFLAGS+= -L$(.OBJDIR)
 .c.o :
 	$(CC) $(CFLAGS) -o $(.TARGET) -c $(.IMPSRC)
 
-.MAIN : test
+.MAIN : amclassify
 
 .PHONY : doc
 doc : Doxyfile
 	cd $(.CURDIR) && doxygen
+
+amclassify : amclassify.o libamalgam.a
+	$(CC) $(CFLAGS) $(LDFLAGS) -o ${.TARGET} ${.ALLSRC:M*.o} -lamalgam
+	install -d $(.CURDIR)/bin
+	install -m0755 $(.TARGET) $(.CURDIR)/bin
 
 test : test.o libamalgam.a
 	$(CC) $(CFLAGS) $(LDFLAGS) -o ${.TARGET} ${.ALLSRC:M*.o} -lamalgam
@@ -34,11 +39,12 @@ libbmatrix.a : bx_emul.o bx_add.o bx_copy.o
 libbmatrix.a : bx_cycle.o bx_identity.o bx_transpose.o bx_free.o bx_eq.o
 	libtool -static ${LDFLAGS} -o ${.TARGET} ${.ALLSRC:M*.o}
 
-libfinsa.a : fi_issl.o fi_project.o
+libfinsa.a : fi_todot.o fi_issl.o fi_project.o
 libfinsa.a : fi_fromatt.o fi_rmeps.o fi_trim.o fi_smonoid.o fi_nerode.o
 libfinsa.a : fi_powerset.o fi_restrict.o fi_copy.o fi_free.o
 	libtool -static ${LDFLAGS} -o ${.TARGET} ${.ALLSRC:M*.[ao]}
 
+libsmonoid.a : sm_todot.o
 libsmonoid.a : sm_istlda.o sm_islda.o
 libsmonoid.a : sm_istlltriv.o sm_islltriv.o
 libsmonoid.a : sm_istlrtriv.o sm_islrtriv.o
@@ -57,6 +63,8 @@ libuilist.a : ui_merge.o ui_insert.o ui_intersect.o ui_has_intersect.o
 libuilist.a : ui_copy.o ui_free.o ui_eq.o ui_find.o
 	libtool -static ${LDFLAGS} -o ${.TARGET} ${.ALLSRC:M*.o}
 
+amclassify.o : amclassify.c amalgam.h smonoid.h finsa.h bmatrix.h uilist.h
+
 bx_add.o : bx_add.c bmatrix.h uilist.h
 bx_copy.o : bx_copy.c bmatrix.h uilist.h
 bx_cycle.o : bx_cycle.c bmatrix.h uilist.h
@@ -72,12 +80,13 @@ bx_vmmul.o : bx_vmmul.c bmatrix.h uilist.h
 
 fi_copy.o : fi_copy.c finsa.h bmatrix.h uilist.h
 fi_free.o : fi_free.c finsa.h bmatrix.h uilist.h
-fi_fromatt.o : fi_fromatt.c finsa.h bmatrix.h uilist.h
+fi_fromatt.o : fi_fromatt.c att.h finsa.h bmatrix.h uilist.h
 fi_issl.o : fi_issl.c finsa.h bmatrix.h uilist.h
 fi_powerset.o : fi_powerset.c finsa.h bmatrix.h uilist.h
 fi_project.o : fi_project.c finsa.h bmatrix.h uilist.h
 fi_restrict.o : fi_restrict.c finsa.h bmatrix.h uilist.h
 fi_smonoid.o : fi_smonoid.c finsa.h bmatrix.h uilist.h
+fi_todot.o : fi_todot.c dot.h finsa.h bmatrix.h uilist.h
 fi_trim.o : fi_trim.c finsa.h bmatrix.h
 
 sm_eggbox.o : sm_eggbox.c smonoid.h bmatrix.h uilist.h
@@ -116,6 +125,7 @@ sm_istriv.o : sm_istriv.c smonoid.h uilist.h
 sm_localsm.o : sm_localsm.c smonoid.h finsa.h bmatrix.h uilist.h
 sm_lrel.o : sm_rrel.c smonoid.h finsa.h bmatrix.h uilist.h
 sm_rrel.o : sm_rrel.c smonoid.h finsa.h bmatrix.h uilist.h
+sm_todot.o : sm_todot.c dot.h smonoid.h uilist.h
 
 ui_copy.o : ui_copy.c uilist.h
 ui_eq.o : ui_eq.c uilist.h
