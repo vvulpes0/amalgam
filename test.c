@@ -19,6 +19,7 @@ print_matrix(struct bmatrix * m)
 			printf("1 ");
 			p = p->next;
 		}
+		if (p) { printf(":: %p", p); }
 		printf("\n");
 	}
 }
@@ -39,6 +40,7 @@ main(void)
 	struct eggboxes * boxes;
 	struct eggbox * p;
 	struct uilist * x;
+	struct uilist u;
 	size_t i;
 	int noid;
 	int comm;
@@ -46,7 +48,26 @@ main(void)
 	int lcom;
 	while (!feof(stdin)) { fgetc(stdin); }
 	if (!m) { return 1; }
+	u.next = NULL; u.value = 0;
 	fi_trim(m);
+	for (i = 0; i < m->count; ++i)
+	{
+		print_matrix(m->graphs[i]);
+		printf("\n");
+	}
+	for (x = m->finals; x; x = x->next ) { printf("%u ", x->value); }
+	printf("\n\n");
+	s = fi_powerset(m, &u);
+	fi_free(m);
+	m = s;
+	s = NULL;
+	for (i = 0; i < m->count; ++i)
+	{
+		print_matrix(m->graphs[i]);
+		printf("\n");
+	}
+	for (x = m->finals; x; x = x->next ) { printf("%u ", x->value); }
+	printf("\n\n");
 	fi_nerode(m);
 	for (i = 0; i < m->count; ++i)
 	{

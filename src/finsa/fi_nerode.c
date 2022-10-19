@@ -11,8 +11,8 @@ _index(unsigned int n, unsigned int p, unsigned int q)
 	q -= p + 1;
 	for (i = 0; p; --p)
 	{
-		--n;
 		i += n;
+		--n;
 	}
 	return i + q;
 }
@@ -83,12 +83,8 @@ fi_nerode(struct finsa * f)
 	{
 		for (j = i + 1; j <= n; ++j, ++x)
 		{
-			if (ui_find(f->finals, i)
-			    == ui_find(f->finals, j))
-			{
-				continue;
-			}
-			d[x] = 1;
+			d[x] = (!ui_find(f->finals, i)
+			        != !ui_find(f->finals, j));
 		}
 	}
 	/* fixed point of expansion */
@@ -132,6 +128,8 @@ fi_nerode(struct finsa * f)
 			if (p->value == n) { continue; }
 			for (q = m->vecs[p->value]; q; q = q->next)
 			{
+				if (q->value >= n) { continue; }
+				if (updates[q->value] >= n) { continue; }
 				m->vecs[p->value]
 					= ui_insert(m->vecs[p->value],
 					            updates[q->value]);

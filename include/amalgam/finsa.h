@@ -83,6 +83,21 @@ int fi_trim(struct finsa * M);
  */
 void fi_rmeps(struct finsa * M, int e);
 
+/** @brief Powerset construction.
+ *
+ * Incrementally construct an automaton whose states
+ * correspond to sets of states of \p M.
+ * An edge labelled \a s exists between states \a a and \a b iff
+ * there is a state \a p in \a a and \a q in \a b
+ * such that an edge labelled \a s exists between \a p and \a q.
+ * The initial state from which the construction is seeded
+ * is given by \p V.
+ * @param[in] M the base automaton
+ * @param[in] V the initial set of states
+ * @return a new deterministic automaton
+ */
+struct finsa * fi_powerset(struct finsa * M, struct uilist * V);
+
 /** @brief Construct a syntactic monoid.
  *
  * The syntactic monoid is an algebraic structure

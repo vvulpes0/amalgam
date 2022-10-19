@@ -218,9 +218,9 @@ fi_fromatt(FILE * f)
 	o = _mkaut(trans, nc + 1, ns + 1);
 	if (o)
 	{
-		fi_rmeps(o, 0);
 		o->finals = finals;
 		finals = NULL;
+		fi_rmeps(o, 0);
 		if (!o->count && o->finals)
 		{
 			o->count = 1;

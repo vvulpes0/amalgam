@@ -11,6 +11,9 @@ fi_rmeps(struct finsa * m, int e)
 	if (!m || !m->graphs) { return; }
 	if (e >= m->count) { return; }
 	if (!bx_reachability(m->graphs[e])) { return; }
+	v = bx_vmmul(m->finals, m->graphs[e]);
+	ui_free(m->finals);
+	m->finals = v;
 	for (i = 0; i < m->count; ++i)
 	{
 		/* unnecessary test saves plenty of multiplication */

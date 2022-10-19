@@ -35,6 +35,8 @@ fi_restrict(struct finsa * c, struct uilist * v)
 	size_t k;
 	size_t x;
 	if (!c || !c->graphs || c->graphs[0]->size < 1) { return; }
+	c->finals = ui_intersect(c->finals, v);
+	_rename(c->finals, v);
 	for (p = v, x = 0; p; p = p->next, ++x);
 	/* for each graph, move the desired rows to the front
 	 * and remove unwanted elements.
