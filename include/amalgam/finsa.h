@@ -41,8 +41,10 @@ struct finsa
  */
 enum finality
 {
-	HAS_FINAL, /*< accepting iff a contained state is accepting */
-	POLY, /*< accepting iff the set is of size at least 2 */
+	/** @brief accepting iff a contained state is accepting */
+	HAS_FINAL,
+	/** @brief accepting iff the set is of size at least 2 */
+	POLY,
 };
 
 /** @brief Deep copy an automaton. \f$\mathcal{O}(n)\f$
