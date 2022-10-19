@@ -138,5 +138,6 @@ fi_nerode(struct finsa * f)
 	}
 	free(updates);
 	fi_restrict(f, states);
+	ui_free(states);
 	return 1;
 }

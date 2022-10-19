@@ -51,8 +51,23 @@ _find(struct llui ** a, struct uilist * field)
 	return i;
 }
 
+static int
+_finality(enum finality z, struct uilist * v, struct uilist * finals)
+{
+	switch (z)
+	{
+	case HAS_FINAL:
+		return ui_has_intersect(v, finals);
+	case POLY:
+		return v && v->next;
+	default:
+		/* what is this */
+		return 0;
+	}
+}
+
 struct finsa *
-fi_powerset(struct finsa * f, struct uilist * v)
+fi_powerset(struct finsa * f, struct uilist * v, enum finality z)
 {
 	struct llui * states = malloc(sizeof(*states));
 	struct llui * p = NULL;
@@ -68,7 +83,7 @@ fi_powerset(struct finsa * f, struct uilist * v)
 	states->next = NULL;
 	states->list = ui_copy(v);
 	if (!states->list && v) { free(states); return NULL; }
-	if (ui_has_intersect(f->finals, v))
+	if (_finality(z, v, f->finals))
 	{
 		finals = ui_insert(finals, 0);
 	}
@@ -80,7 +95,7 @@ fi_powerset(struct finsa * f, struct uilist * v)
 		{
 			r = bx_vmmul(p->list, f->graphs[i]);
 			n = _find(&states, r);
-			if (ui_has_intersect(r, f->finals))
+			if (_finality(z, r, f->finals))
 			{
 				finals = ui_insert(finals, n);
 			}
@@ -126,5 +141,6 @@ fi_powerset(struct finsa * f, struct uilist * v)
 			ui_free(r);
 		}
 	}
+	_freellui(states);
 	return o;
 }

@@ -1,11 +1,13 @@
 #include "finsa.h"
 #include "bmatrix.h"
 #include "uilist.h"
+#include <stdlib.h>
 void
 fi_rmeps(struct finsa * m, int e)
 {
 	struct uilist * v;
 	struct bmatrix * t;
+	struct finsa * x;
 	size_t i;
 	size_t j;
 	if (!m || !m->graphs) { return; }
@@ -29,6 +31,22 @@ fi_rmeps(struct finsa * m, int e)
 	t = m->graphs[e];
 	m->graphs[e] = m->graphs[m->count - 1];
 	m->graphs[m->count - 1] = t;
-	bx_free(m->graphs[m->count - 1]);
 	--(m->count);
+	if (!m->graphs[m->count]->vecs[0]->next)
+	{
+		bx_free(m->graphs[m->count]);
+		return;
+	}
+	/* account for multiplied initials */
+	x = fi_powerset(m, m->graphs[m->count]->vecs[0], HAS_FINAL);
+	for (i = 0; i <= m->count; ++i)
+	{
+		bx_free(m->graphs[i]);
+	}
+	free(m->graphs);
+	ui_free(m->finals);
+	m->graphs = x->graphs;
+	m->count = x->count;
+	m->finals = x->finals;
+	free(x);
 }

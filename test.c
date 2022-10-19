@@ -46,6 +46,8 @@ main(void)
 	int comm;
 	int subcomm;
 	int lcom;
+	int issl = 0;
+	int istsl = 0;
 	while (!feof(stdin)) { fgetc(stdin); }
 	if (!m) { return 1; }
 	u.next = NULL; u.value = 0;
@@ -57,7 +59,7 @@ main(void)
 	}
 	for (x = m->finals; x; x = x->next ) { printf("%u ", x->value); }
 	printf("\n\n");
-	s = fi_powerset(m, &u);
+	s = fi_powerset(m, &u, HAS_FINAL);
 	fi_free(m);
 	m = s;
 	s = NULL;
@@ -74,7 +76,11 @@ main(void)
 		print_matrix(m->graphs[i]);
 		printf("\n");
 	}
+	issl = fi_issl(m);
 	s = fi_smonoid(m);
+	fi_project(m);
+	fi_nerode(m);
+	istsl = fi_issl(m);
 	fi_free(m);
 	m = s;
 	s = NULL;
@@ -114,7 +120,7 @@ main(void)
 	m = NULL;
 	printf("%12s%4s%4s %4s\n","","V","LV","TLV");
 	static char const * const format = "%12s%4c%4c%4c\n";
-	printf(format, "Commutative", b(comm), b(subcomm), b(lcom));
+	printf(format, "Commutative", b(comm), b(lcom), b(subcomm));
 	printf(format, "SF", b(sm_issf(e)), ' ', ' ');
 	printf(format, "DA", b(sm_isda(e)),
 	       b(sm_islda(boxes, noid)), b(sm_istlda(boxes)));
@@ -137,6 +143,8 @@ main(void)
 	printf(format, "D", ' ', b(sm_isd(e, noid)), b(sm_istd(e)));
 	printf(format, "K", ' ', b(sm_isk(e, noid)), b(sm_istk(e)));
 	printf(format, "F", ' ', b(sm_isn(e, noid)), b(sm_istn(e)));
+	printf("\n");
+	printf(format, "SL", ' ', b(issl), b(istsl));
 	e = NULL;
 	sm_freelist(boxes);
 	boxes = NULL;

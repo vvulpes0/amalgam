@@ -37,6 +37,14 @@ struct finsa
 	size_t count;
 };
 
+/** @brief How to mark states as accepting in a powerset construction.
+ */
+enum finality
+{
+	HAS_FINAL, /*< accepting iff a contained state is accepting */
+	POLY, /*< accepting iff the set is of size at least 2 */
+};
+
 /** @brief Deep copy an automaton. \f$\mathcal{O}(n)\f$
  *
  * Allocate sufficient memory for a new automaton and return the result.
@@ -94,9 +102,11 @@ void fi_rmeps(struct finsa * M, int e);
  * is given by \p V.
  * @param[in] M the base automaton
  * @param[in] V the initial set of states
+ * @param z how accepting states are chosen
  * @return a new deterministic automaton
  */
-struct finsa * fi_powerset(struct finsa * M, struct uilist * V);
+struct finsa * fi_powerset(struct finsa * M, struct uilist * V,
+                           enum finality z);
 
 /** @brief Construct a syntactic monoid.
  *
@@ -111,6 +121,24 @@ struct finsa * fi_powerset(struct finsa * M, struct uilist * V);
  * @return a representation of the syntactic monoid of \p M
  */
 struct finsa * fi_smonoid(struct finsa * M);
+
+/** @brief Remove symbols that can be freely inserted and deleted.
+ *
+ * For every symbol which acts as the identity,
+ * remove it and free the associated memory.
+ * @param[in,out] M the automaton
+ */
+void fi_project(struct finsa * M);
+
+/** @brief Determine if a pattern is strictly local.
+ *
+ * A strictly local language is one defined by a conjunction
+ * of negative factors over successor.
+ * @pre \p M is deterministic, minimal, and trim
+ * @param[in] M the automaton
+ * @return nonzero iff the pattern is strictly local
+ */
+int fi_issl(struct finsa * M);
 
 #ifdef __cplusplus
 }
