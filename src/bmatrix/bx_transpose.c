@@ -15,7 +15,7 @@ bx_transpose(struct bmatrix * m)
 		x[i] = m->vecs[i];
 		m->vecs[i] = NULL;
 	}
-	for (i = m->size - 1; i + 1 > 0; --i)
+	for (i = m->size; i--;)
 	{
 		while (x[i])
 		{

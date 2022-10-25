@@ -27,7 +27,7 @@ bx_mul(struct bmatrix * a, struct bmatrix * m)
 	if (!bx_transpose(n)) { bx_free(n); bx_free(r); return 0; }
 	for (i = 0; i < a->size; ++i)
 	{
-		for (j = n->size - 1; j + 1 != 0; --j)
+		for (j = n->size; j--;)
 		{
 			if (!ui_has_intersect(a->vecs[i],n->vecs[j]))
 			{

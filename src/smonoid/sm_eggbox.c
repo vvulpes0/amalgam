@@ -32,7 +32,7 @@ cluster(struct bmatrix * r)
 	struct uilist * t;
 	size_t i;
 	if (!r || !r->vecs) { return NULL; }
-	for (i = r->size - 1; i + 1 > 0; --i)
+	for (i = r->size; i--;)
 	{
 		ep = o;
 		t = malloc(sizeof(*t));
