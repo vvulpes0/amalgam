@@ -51,14 +51,16 @@ struct eggbox
 {
 	/** another box, if one exists */
 	struct eggbox * next;
-	/** an array of eggs (lists of H-related elements) */
-	struct uilist ** eggs;
 	/** an array sized like \c eggs indicating which are groups */
 	_Bool * groups;
 	/** number of rows (R-classes) of eggs */
 	size_t rows;
 	/** number of columns (L-classes) of eggs */
 	size_t cols;
+	/** whether eggs contain multiple elements */
+	_Bool polyeggs;
+	/** whether this box contains the identity element */
+	_Bool has_id;
 };
 
 /** a linked list of eggbox diagrams */

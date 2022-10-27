@@ -8,22 +8,12 @@ sm_isda(struct eggbox * b)
 	_Bool i;
 	for (; b; b = b->next)
 	{
+		if (b->polyeggs) { return 0; }
 		i = b->groups[0];
-		for (r = 0; r < b->rows; ++r)
+		for (r = 0; r < b->rows * b->cols; ++r)
 		{
-			for (c = 0; c < b->cols; ++c)
-			{
-				if (b->eggs[r * b->cols + c]->next)
-				{
-					/* not even SF */
-					return 0;
-				}
-				if (b->groups[r * b->cols + c] != i)
-				{
-					/* unmatched idempotency */
-					return 0;
-				}
-			}
+			/* unmatched idempotency */
+			if (b->groups[r] != i) { return 0; }
 		}
 	}
 	return 1;

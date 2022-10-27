@@ -3,25 +3,14 @@
 int
 sm_isband(struct eggbox * b)
 {
-	size_t r;
-	size_t c;
+	size_t i;
 	for (; b; b = b->next)
 	{
-		for (r = 0; r < b->rows; ++r)
+		if (b->polyeggs) { return 0; }
+		for (i = 0; i < b->rows * b->cols; ++i)
 		{
-			for (c = 0; c < b->cols; ++c)
-			{
-				if (b->eggs[r * b->cols + c]->next)
-				{
-					/* not even SF */
-					return 0;
-				}
-				if (!b->groups[r * b->cols + c])
-				{
-					/* non-idempotent element */
-					return 0;
-				}
-			}
+			/* non-idempotent element */
+			if (!b->groups[i]) { return 0; }
 		}
 	}
 	return 1;

@@ -4,6 +4,21 @@
 #include "uilist.h"
 #include <stdlib.h>
 /** @private */
+struct primordial_eggbox
+{
+	/** another box, if one exists */
+	struct eggbox * next;
+	/** an array of eggs (lists of H-related elements) */
+	struct uilist ** eggs;
+	/** an array sized like \c eggs indicating which are groups */
+	_Bool * groups;
+	/** number of rows (R-classes) of eggs */
+	size_t rows;
+	/** number of columns (L-classes) of eggs */
+	size_t cols;
+};
+
+/** @private */
 struct ebvec
 {
 	struct ebvec * next;
@@ -93,8 +108,9 @@ partition_overlap(struct uilist * p, struct ebvec ** v)
 	return i;
 }
 
-static void
-fill_box(struct eggbox * e, struct ebvec * rows, struct ebvec * cols,
+static int
+fill_box(struct primordial_eggbox * e,
+         struct ebvec * rows, struct ebvec * cols,
          struct finsa * m)
 {
 	struct ebvec * ep;
@@ -104,12 +120,14 @@ fill_box(struct eggbox * e, struct ebvec * rows, struct ebvec * cols,
 	size_t c;
 	size_t r;
 	size_t s;
-	if (!e || !rows || !cols || !m) { return; }
+	int has_id = 0;
+	if (!e || !rows || !cols || !m) { return 0; }
 	for (r = 0; r < e->rows; ++r)
 	{
 		while (rows->elements)
 		{
 			t = rows->elements;
+			if (!t->value) { has_id |= 1; }
 			rows->elements = t->next;
 			t->next = NULL;
 			ep = cols;
@@ -146,6 +164,7 @@ fill_box(struct eggbox * e, struct ebvec * rows, struct ebvec * cols,
 		}
 		rows = rows->next;
 	}
+	return has_id;
 }
 
 struct eggbox *
@@ -156,7 +175,8 @@ sm_eggbox(struct finsa * m)
 	struct ebvec * cols;
 	struct ebvec * t;
 	struct eggbox * o = NULL;
-	struct eggbox * e;
+	struct eggbox * b;
+	struct primordial_eggbox e;
 	size_t i;
 	size_t s;
 	if (!m || !m->graphs || !m->count) { return NULL; }
@@ -172,32 +192,38 @@ sm_eggbox(struct finsa * m)
 	mt = NULL;
 	while (rows)
 	{
-		e = malloc(sizeof(*e));
-		if (!e)
+		b = malloc(sizeof(*b));
+		if (!b)
 		{
 			free_ebvec(rows);
 			free_ebvec(cols);
 			sm_free(o);
 			return NULL;
 		}
-		e->next = o;
-		e->cols = partition_overlap(rows->elements, &cols);
-		e->rows = partition_overlap(cols->elements, &rows);
-		s = e->cols * e->rows;
-		e->eggs = malloc(s * sizeof(*(e->eggs)));
-		if (!e->eggs)
+		b->next = o;
+		b->groups = 0;
+		b->rows = 0;
+		b->cols = 0;
+		b->polyeggs = 0;
+		b->has_id = 0;
+		e.next = NULL;
+		e.cols = partition_overlap(rows->elements, &cols);
+		e.rows = partition_overlap(cols->elements, &rows);
+		s = e.cols * e.rows;
+		e.eggs = malloc(s * sizeof(*(e.eggs)));
+		if (!e.eggs)
 		{
-			free(e);
+			free(b);
 			free_ebvec(rows);
 			free_ebvec(cols);
 			sm_free(o);
 			return NULL;
 		}
-		e->groups = malloc(s * sizeof(*(e->groups)));
-		if (!e->groups)
+		e.groups = malloc(s * sizeof(*(e.groups)));
+		if (!e.groups)
 		{
-			free(e->eggs);
-			free(e);
+			free(b);
+			free(e.eggs);
 			free_ebvec(rows);
 			free_ebvec(cols);
 			sm_free(o);
@@ -205,11 +231,26 @@ sm_eggbox(struct finsa * m)
 		}
 		for (i = 0; i < s; ++i)
 		{
-			e->eggs[i] = NULL;
-			e->groups[i] = 0;
+			e.eggs[i] = NULL;
+			e.groups[i] = 0;
 		}
-		fill_box(e, rows, cols, m);
-		for (i = 0; i < e->rows; ++i)
+		b->has_id = fill_box(&e, rows, cols, m);
+		b->groups = e.groups;
+		e.groups = NULL;
+		b->rows = e.rows;
+		b->cols = e.cols;
+		if (e.eggs[0] && e.eggs[0]->next)
+		{
+			b->polyeggs = 1;
+		}
+		for (i = 0; i < e.rows * e.cols; ++i)
+		{
+			ui_free(e.eggs[i]);
+			e.eggs[i] = NULL;
+		}
+		free(e.eggs);
+		e.eggs = NULL;
+		for (i = 0; i < b->rows; ++i)
 		{
 			t = rows;
 			ui_free(rows->elements);
@@ -217,7 +258,7 @@ sm_eggbox(struct finsa * m)
 			rows = rows->next;
 			free(t);
 		}
-		for (i = 0; i < e->cols; ++i)
+		for (i = 0; i < b->cols; ++i)
 		{
 			t = cols;
 			ui_free(cols->elements);
@@ -225,7 +266,7 @@ sm_eggbox(struct finsa * m)
 			cols = cols->next;
 			free(t);
 		}
-		o = e;
+		o = b;
 	}
 	free_ebvec(cols);
 	return o;

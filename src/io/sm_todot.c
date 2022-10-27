@@ -44,7 +44,14 @@ sm_todot(FILE * f, struct eggbox * b)
 					nc += fprintf(f, "<TR><TD ");
 					nc += fprintf(f, "BORDER=\"1\">");
 				}
-				nc += _printlist(f, b->eggs[k]);
+				if (b->has_id)
+				{
+					nc += fprintf(f, "0");
+				}
+				if (b->polyeggs)
+				{
+					nc += fprintf(f, "+");
+				}
 				if (b->groups[k])
 				{
 					nc += fprintf(f, "</TD></TR>");
