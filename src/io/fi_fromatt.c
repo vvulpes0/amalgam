@@ -87,7 +87,7 @@ _find(struct strlist ** a, char const * field, int len)
 	p = *a;
 	while (p)
 	{
-		if (!strncmp(field, p->str, len))
+		if (!strncmp(field, p->str, len) && !p->str[len])
 		{
 			return i;
 		}
@@ -103,6 +103,7 @@ _find(struct strlist ** a, char const * field, int len)
 	p->str = malloc((len + 1) * sizeof(*(p->str)));
 	if (!p->str) { free(p); }
 	strncpy(p->str, field, len);
+	p->str[len] = '\0';
 	if (b) { b->next = p; return i; }
 	*a = p;
 	return i;
@@ -161,11 +162,9 @@ fi_fromatt(FILE * f)
 	int s = 0;
 	int x;
 	if (!linebuf) { return NULL; }
+	/* 0 is reserved for emptiness. let's ensure it is first */
 	_find(&symbols, "0", 1);
 	if (!symbols) { return NULL; }
-	/* 0 is reserved for emptiness. let's ensure it is first */
-	symbols->str[0] = '0';
-	symbols->str[1] = '\0';
 	while (fgets(linebuf, NUMCHARS, f))
 	{
 		nf = _nf(linebuf);
@@ -191,17 +190,17 @@ fi_fromatt(FILE * f)
 			(*transe)->next = NULL;
 			if (!*transe) { continue; }
 			v = _field(linebuf, 1, &s);
-			if (!s) { transe = &((*transe)->next); continue; }
+			if (!s) { free(*transe); continue; }
 			x = _find(&states, v, s);
 			ns = x > ns ? x : ns;
 			(*transe)->src = x;
 			v = _field(v, 2, &s);
-			if (!s) { transe = &((*transe)->next); continue; }
+			if (!s) { free(*transe); continue; }
 			x = _find(&states, v, s);
 			ns = x > ns ? x : ns;
 			(*transe)->dst = x;
 			v = _field(v, 2, &s);
-			if (!s) { transe = &((*transe)->next); continue; }
+			if (!s) { free(*transe); continue; }
 			x = _find(&symbols, v, s);
 			(*transe)->sym = x;
 			nc = x > nc ? x : nc;
