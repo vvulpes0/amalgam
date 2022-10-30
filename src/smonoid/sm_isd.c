@@ -11,7 +11,7 @@ sm_isd(struct eggbox * b, int x)
 	{
 		if (b->polyeggs) { return 0; }
 		if (b->rows != 1) { return 0; }
-		if (x && b->has_id) { continue; }
+		if (x && b->cols == 1 && b->has_id) { continue; }
 		i = b->groups[0];
 		if (ever_i && i) { return 0; }
 		ever_i |= i;

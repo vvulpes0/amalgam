@@ -28,7 +28,7 @@ main(void)
 	m = s;
 	s = NULL;
 	fi_nerode(m);
-	s = fi_smonoid(m);
+	s = fi_ssg(m);
 	fi_free(m);
 	m = s;
 	s = NULL;

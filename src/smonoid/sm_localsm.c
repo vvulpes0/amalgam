@@ -17,7 +17,7 @@ sm_localsm(struct finsa * m, int * all_comm)
 	if (!m || !m->graphs) { return NULL; }
 	if (!m->graphs[0]) { return NULL; }
 	if (m->count != m->graphs[0]->size) { return NULL; }
-	/* now we're safe to believe we have an actual monoid */
+	/* now we're safe to believe we have an actual semigroup */
 	for (i = 0; i < m->count; ++i)
 	{
 		if (!m->graphs[i] || !m->graphs[i]->vecs)
@@ -49,6 +49,7 @@ sm_localsm(struct finsa * m, int * all_comm)
 			ui_free(v);
 			return NULL;
 		}
+		(*oe)->is_proper = 1;
 		(*oe)->next = NULL;
 		(*oe)->box = sm_eggbox(f);
 		if (!(*oe)->box)
@@ -58,9 +59,14 @@ sm_localsm(struct finsa * m, int * all_comm)
 			ui_free(v);
 			return NULL;
 		}
+		if (!i && m->finals) { (*oe)->is_proper = 0; }
 		oe = &((*oe)->next);
-		/* i==0 is the identity, skip that one */
-		if (all_comm && i) { *all_comm &= !!sm_iscom(f); }
+		/* if you care about commutativity of the semigroup,
+		 * calculate that yourself. */
+		if (all_comm && (i || !m->finals))
+		{
+			*all_comm &= !!sm_iscom(f);
+		}
 		fi_free(f);
 		ui_free(v);
 	}

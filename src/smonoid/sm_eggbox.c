@@ -127,7 +127,7 @@ fill_box(struct primordial_eggbox * e,
 		while (rows->elements)
 		{
 			t = rows->elements;
-			if (!t->value) { has_id |= 1; }
+			if (m->finals && !t->value) { has_id |= 1; }
 			rows->elements = t->next;
 			t->next = NULL;
 			ep = cols;

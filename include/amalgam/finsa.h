@@ -115,14 +115,33 @@ struct finsa * fi_powerset(struct finsa * M, struct uilist * V,
  * The syntactic monoid is an algebraic structure
  * derived from a Nerode-minimal automaton.
  * In this system, such a structure
- * is defined as an automaton with one symbol (one overlay) per node
- * and with no accepting states.
+ * is defined as an automaton with one symbol (one overlay) per node.
+ * If the identity element, which is always node 0,
+ * is reachable then it is an accepting state,
+ * else there are no accepting states.
  * @pre inputs are in Myhill- or Nerode-minimal form
  * @post outputs are in Myhill-minimal form
  * @param[in] M the automaton
  * @return a representation of the syntactic monoid of \p M
  */
 struct finsa * fi_smonoid(struct finsa * M);
+
+/** @brief Construct a syntactic semigroup.
+ *
+ * The syntactic semigroup is an algebraic structure
+ * derived from a Nerode-minimal automaton.
+ * In this system, such a structure
+ * is defined as an automaton with one symbol (one overlay) per node.
+ * If there is an identity element, its index is 0
+ * and this state is marked accepting.
+ * If not, then there are no accepting states.
+ * @pre inputs are in Myhill- or Nerode-minimal form
+ * @post outputs are in Myhill-minimal form
+ * @param[in] M the automaton
+ * @param[out] q the index of the identity element
+ * @return a representation of the syntactic semigroup of \p M
+ */
+struct finsa * fi_ssg(struct finsa * M);
 
 /** @brief Remove symbols that can be freely inserted and deleted.
  *

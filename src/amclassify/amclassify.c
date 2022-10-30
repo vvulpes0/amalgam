@@ -21,7 +21,6 @@ main(void)
 	struct uilist * x;
 	struct uilist u;
 	size_t i;
-	int noid;
 	int comm;
 	int subcomm;
 	int lcom;
@@ -41,7 +40,7 @@ main(void)
 	/* minimize and trim */
 	fi_nerode(m);
 	issl = fi_issl(m);
-	s = fi_smonoid(m);
+	s = fi_ssg(m);
 	fi_project(m);
 	fi_nerode(m);
 	istsl = fi_issl(m);
@@ -51,10 +50,10 @@ main(void)
 	/* the main structure: local eggboxes */
 	boxes = sm_localsm(m, &subcomm);
 	if (!boxes) { return EXIT_FAILURE; }
-	e = boxes->box;
-	noid = !m->finals;
+	e = sm_eggbox(m);
+	if (!e) { sm_freelist(boxes); return EXIT_FAILURE; }
 	comm = sm_iscom(m);
-	lcom = subcomm && (noid || comm);
+	lcom = subcomm && (!m->finals || comm);
 	fi_free(m);
 	m = NULL;
 	printf("%12s%4s%4s %4s\n","","V","LV","TLV");
@@ -62,29 +61,29 @@ main(void)
 	printf(format, "Commutative", b(comm), b(lcom), b(subcomm));
 	printf(format, "SF", b(sm_issf(e)), ' ', ' ');
 	printf(format, "DA", b(sm_isda(e)),
-	       b(sm_islda(boxes, noid)), b(sm_istlda(boxes)));
+	       b(sm_islda(boxes, 0)), b(sm_istlda(boxes)));
 	printf(format, "L-trivial", b(sm_isltriv(e)),
-	       b(sm_islltriv(boxes, noid)), b(sm_istlltriv(boxes)));
+	       b(sm_islltriv(boxes, 0)), b(sm_istlltriv(boxes)));
 	printf(format, "R-trivial", b(sm_isrtriv(e)),
-	       b(sm_islrtriv(boxes, noid)), b(sm_istlrtriv(boxes)));
+	       b(sm_islrtriv(boxes, 0)), b(sm_istlrtriv(boxes)));
 	printf(format, "Band", b(sm_isband(e)),
-	       b(sm_ese(boxes, sm_isband, noid)),
+	       b(sm_ese(boxes, sm_isband, 0)),
 	       b(sm_ese(boxes, sm_isband, 1)));
 	printf(format, "PT", b(sm_ispt(e)),
-	       b(sm_islj(boxes, noid)), b(sm_istlj(boxes)));
+	       b(sm_islj(boxes, 0)), b(sm_istlj(boxes)));
 	printf(format, "Acom", b(comm && sm_issf(e)),
 	       b(lcom && sm_issf(e)),
 	       b(subcomm && sm_issf(e)));
 	printf(format, "Semilattice", b(sm_issemilat(e)),
-	       b(sm_islt(boxes, noid)), b(sm_istlt(boxes)));
+	       b(sm_islt(boxes, 0)), b(sm_istlt(boxes)));
 	printf(format, "1", b(sm_istriv(e)),
-	       b(sm_isgd(e, noid)), b(sm_istgd(e)));
-	printf(format, "D", ' ', b(sm_isd(e, noid)), b(sm_istd(e)));
-	printf(format, "K", ' ', b(sm_isk(e, noid)), b(sm_istk(e)));
-	printf(format, "F", ' ', b(sm_isn(e, noid)), b(sm_istn(e)));
+	       b(sm_isgd(e, 0)), b(sm_istgd(e)));
+	printf(format, "D", ' ', b(sm_isd(e, 0)), b(sm_istd(e)));
+	printf(format, "K", ' ', b(sm_isk(e, 0)), b(sm_istk(e)));
+	printf(format, "F", ' ', b(sm_isn(e, 0)), b(sm_istn(e)));
 	printf("\n");
 	printf(format, "SL", ' ', b(issl), b(istsl));
-	e = NULL;
+	sm_free(e);
 	sm_freelist(boxes);
 	boxes = NULL;
 	return 0;

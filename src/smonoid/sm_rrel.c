@@ -16,7 +16,7 @@ sm_rrel(struct finsa * m)
 	if (!o->vecs) { free(o); return NULL; }
 	for (o->size = 0; o->size < m->count; ++(o->size))
 	{
-		o->vecs[o->size] = NULL;
+		o->vecs[o->size] = ui_insert(NULL, o->size);
 		/* xS : union the x'th row of each matrix */
 		for (i = 0; i < m->count; ++i)
 		{
