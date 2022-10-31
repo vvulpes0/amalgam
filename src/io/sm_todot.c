@@ -27,6 +27,12 @@ sm_todot(FILE * f, struct eggbox * b)
 	for (x = 0; b; b = b->next, ++x)
 	{
 		nc += fprintf(f, "%zu [label=<", x);
+		if (b->polyeggs)
+		{
+			nc += fprintf(f, "<TABLE ");
+			nc += fprintf(f, "BORDER=\"1\">");
+			nc += fprintf(f, "<TR><TD BORDER=\"0\">");
+		}
 		nc += fprintf(f, "<TABLE BORDER=\"0\" ");
 		nc += fprintf(f, "CELLBORDER=\"1\" ");
 		nc += fprintf(f, "CELLSPACING=\"0\">\n");
@@ -37,31 +43,25 @@ sm_todot(FILE * f, struct eggbox * b)
 			{
 				k = i * b->cols + j;
 				nc += fprintf(f, "\t\t<TD>");
-				if (b->groups[k])
-				{
-					nc += fprintf(f, "<TABLE ");
-					nc += fprintf(f, "BORDER=\"0\">");
-					nc += fprintf(f, "<TR><TD ");
-					nc += fprintf(f, "BORDER=\"1\">");
-				}
 				if (b->has_id)
 				{
 					nc += fprintf(f, "0");
 				}
-				if (b->polyeggs)
-				{
-					nc += fprintf(f, "+");
-				}
 				if (b->groups[k])
 				{
-					nc += fprintf(f, "</TD></TR>");
-					nc += fprintf(f, "</TABLE>");
+					nc += fprintf(f, "*");
 				}
 				nc += fprintf(f, "</TD>\n");
 			}
 			nc += fprintf(f, "\t</TR>\n");
 		}
-		nc += fprintf(f, "</TABLE>>];\n");
+		nc += fprintf(f, "</TABLE>");
+		if (b->polyeggs)
+		{
+			nc += fprintf(f, "</TD></TR>");
+			nc += fprintf(f, "</TABLE>");
+		}
+		nc += fprintf(f, ">];\n");
 	}
 	return nc + fprintf(f, "}\n");
 }
