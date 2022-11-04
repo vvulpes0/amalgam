@@ -42,7 +42,13 @@ sm_todot(FILE * f, struct eggbox * b)
 			for (j = 0; j < b->cols; ++j)
 			{
 				k = i * b->cols + j;
-				nc += fprintf(f, "\t\t<TD>");
+				nc += fprintf(f, "\t\t<TD");
+				if (b->groups[k])
+				{
+					nc += fprintf(f, " BGCOLOR=\"");
+					nc += fprintf(f, "#D1D1D1\"");
+				}
+				nc += fprintf(f,">");
 				if (b->has_id)
 				{
 					nc += fprintf(f, "0");
