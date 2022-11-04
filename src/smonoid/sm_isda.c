@@ -4,7 +4,6 @@ int
 sm_isda(struct eggbox * b)
 {
 	size_t r;
-	size_t c;
 	_Bool i;
 	for (; b; b = b->next)
 	{

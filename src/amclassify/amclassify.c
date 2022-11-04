@@ -17,10 +17,7 @@ main(void)
 	struct finsa * s;
 	struct eggbox * e;
 	struct eggboxes * boxes;
-	struct eggbox * p;
-	struct uilist * x;
 	struct uilist u;
-	size_t i;
 	int comm;
 	int subcomm;
 	int lcom;

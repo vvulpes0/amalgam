@@ -3,8 +3,6 @@
 int
 sm_isn(struct eggbox * b, int x)
 {
-	size_t r;
-	size_t c;
 	_Bool i;
 	_Bool ever_i = 0;
 	for (; b; b = b->next)

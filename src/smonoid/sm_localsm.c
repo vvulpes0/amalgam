@@ -3,21 +3,57 @@
 #include "bmatrix.h"
 #include "uilist.h"
 #include <stdlib.h>
+static struct eggbox *
+fill_box(struct finsa * m, unsigned int i, int *all_comm)
+{
+	struct finsa * f = NULL;
+	struct eggbox * o = NULL;
+	struct uilist * v = NULL;
+	struct uilist * x = NULL;
+	/* compute eS by unioning matrix rows */
+	for (size_t j = 0; j < m->count; ++j)
+	{
+		v = ui_merge(v, m->graphs[j]->vecs[i]);
+	}
+	x = v;
+	/* now eS*e is a simple matrix multiplication */
+	v = bx_vmmul(x, m->graphs[i]);
+	ui_free(x);
+	x = NULL;
+	/* restrict to v=eSe */
+	f = sm_generate(v, m);
+	/* if you care about commutativity of the semigroup,
+	 * calculate that yourself. */
+	if (all_comm && (i || !m->finals))
+	{
+		*all_comm = *all_comm && !!sm_iscom(f);
+	}
+	o = sm_eggbox(f);
+	fi_free(f);
+	ui_free(v);
+	return o;
+}
+
 struct eggboxes *
 sm_localsm(struct finsa * m, int * all_comm)
 {
 	struct eggboxes * o = NULL;
 	struct eggboxes ** oe = &o;
-	struct finsa * f;
-	struct uilist * v;
-	struct uilist * x;
+	unsigned int * idempotents = NULL;
+	struct eggbox *** boxes = NULL;
 	size_t i;
-	size_t j;
+	size_t num_idempotents = 0;
 	if (all_comm) { *all_comm = 1; }
 	if (!m || !m->graphs) { return NULL; }
 	if (!m->graphs[0]) { return NULL; }
 	if (m->count != m->graphs[0]->size) { return NULL; }
-	/* now we're safe to believe we have an actual semigroup */
+	/* now we're safe to believe we have an actual semigroup
+	 * start by generating the skeleton eggbox list:
+	 */
+	idempotents = calloc(m->count, sizeof(*idempotents));
+	if (!idempotents) { return NULL; }
+	boxes = malloc(m->count * sizeof(*boxes));
+	if (!boxes) { free(idempotents); return NULL; }
 	for (i = 0; i < m->count; ++i)
 	{
 		if (!m->graphs[i] || !m->graphs[i]->vecs)
@@ -27,48 +63,32 @@ sm_localsm(struct finsa * m, int * all_comm)
 		}
 		if (!m->graphs[i]->vecs[i]) { continue; }
 		if (i != m->graphs[i]->vecs[i]->value) { continue; }
-		/* here we are idempotent! */
-		/* compute eS by unioning matrix rows */
-		v = NULL;
-		for (j = 0; j < m->count; ++j)
-		{
-			v = ui_merge(v, m->graphs[j]->vecs[i]);
-		}
-		x = v;
-		/* now eS*e is a simple matrix multiplication */
-		v = bx_vmmul(x, m->graphs[i]);
-		ui_free(x);
-		x = NULL;
-		/* restrict to v=eSe */
-		f = sm_generate(v, m);
+		/* here we are idempotent!
+		 * allocate a box */
 		*oe = malloc(sizeof(**oe));
 		if (!*oe)
 		{
 			sm_freelist(o);
-			fi_free(f);
-			ui_free(v);
 			return NULL;
 		}
-		(*oe)->is_proper = 1;
+		(*oe)->is_proper = (i || !m->finals);
 		(*oe)->next = NULL;
-		(*oe)->box = sm_eggbox(f);
-		if (!(*oe)->box)
-		{
-			sm_freelist(o);
-			fi_free(f);
-			ui_free(v);
-			return NULL;
-		}
-		if (!i && m->finals) { (*oe)->is_proper = 0; }
+		(*oe)->box = NULL;
+		boxes[num_idempotents] = &((*oe)->box);
+		idempotents[num_idempotents++] = i;
 		oe = &((*oe)->next);
-		/* if you care about commutativity of the semigroup,
-		 * calculate that yourself. */
-		if (all_comm && (i || !m->finals))
-		{
-			*all_comm &= !!sm_iscom(f);
-		}
-		fi_free(f);
-		ui_free(v);
 	}
+	/* fill the structure for each idempotent */
+	int ac = all_comm ? *all_comm : 1;
+	#pragma omp parallel for reduction (&&:ac)
+	for (i = 0; i < num_idempotents; ++i)
+	{
+		int tlallcomm = 1;
+		*(boxes[i]) = fill_box(m, idempotents[i], &tlallcomm);
+		ac = ac && tlallcomm;
+	}
+	if (all_comm) { *all_comm = ac; }
+	free(idempotents);
+	free(boxes);
 	return o;
 }

@@ -5,7 +5,6 @@ void
 sm_free(struct eggbox * p)
 {
 	struct eggbox * t;
-	size_t i;
 	while (p)
 	{
 		t = p->next;

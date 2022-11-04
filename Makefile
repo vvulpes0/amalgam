@@ -24,12 +24,12 @@ doc : Doxyfile
 	cd $(.CURDIR) && doxygen
 
 amclassify : amclassify.o libamalgam.a
-	$(CC) $(CFLAGS) $(LDFLAGS) -o ${.TARGET} ${.ALLSRC:M*.o} -lamalgam
+	$(CC) $(CFLAGS) $(LDFLAGS) -o ${.TARGET} ${.ALLSRC:M*.o} -lamalgam $(LD_LIBS)
 	install -d $(.CURDIR)/bin
 	install -m0755 $(.TARGET) $(.CURDIR)/bin
 
 test : test.o libamalgam.a
-	$(CC) $(CFLAGS) $(LDFLAGS) -o ${.TARGET} ${.ALLSRC:M*.o} -lamalgam
+	$(CC) $(CFLAGS) $(LDFLAGS) -o ${.TARGET} ${.ALLSRC:M*.o} -lamalgam $(LD_LIBS)
 
 libamalgam.a : libsmonoid.a libfinsa.a libbmatrix.a libuilist.a
 	libtool -static ${LDFLAGS} -o ${.TARGET} ${.ALLSRC:M*.a}

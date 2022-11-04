@@ -3,22 +3,13 @@
 #include <amalgam/io/dot.h>
 #include <stdlib.h>
 #include <stdio.h>
-static char
-b(int x)
-{
-	return x ? 'Y' : 'N';
-}
-
 int
 main(void)
 {
-	char buf[1024];
 	struct finsa * m = fi_fromatt(stdin);
 	struct finsa * s;
 	struct eggbox * box;
-	FILE * f;
 	struct uilist u;
-	size_t i;
 	u.next = NULL;
 	u.value = 0;
 	if (!m) { return EXIT_FAILURE; }
