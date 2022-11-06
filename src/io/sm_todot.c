@@ -51,11 +51,11 @@ sm_todot(FILE * f, struct eggbox * b)
 				nc += fprintf(f,">");
 				if (b->has_id)
 				{
-					nc += fprintf(f, "0");
+					nc += fprintf(f, "\342\212\233");
 				}
-				if (b->groups[k])
+				else if (b->groups[k])
 				{
-					nc += fprintf(f, "*");
+					nc += fprintf(f, "\342\210\227");
 				}
 				nc += fprintf(f, "</TD>\n");
 			}
