@@ -182,7 +182,7 @@ main(void)
 		}
 	}
 	r.Acom = r.Acom && c->comm;
-	lcomm = c->plcomm&&((c->semigroup == c->localsm->box)||c->comm);
+	lcomm = c->plcomm&&((c->semigroup != c->localsm->box)||c->comm);
 	r.LTT  = r.LTT && lcomm;
 	r.TLTT = r.TLTT && c->plcomm;
 
