@@ -53,7 +53,7 @@ sm_localsm(struct finsa * m, int * all_comm)
 	if (!idempotents) { return NULL; }
 	boxes = malloc(m->count * sizeof(*boxes));
 	if (!boxes) { free(idempotents); return NULL; }
-	for (i = 1; i < m->count; ++i)
+	for (i = !!(m->finals); i < m->count; ++i)
 	{
 		if (!m->graphs[i] || !m->graphs[i]->vecs)
 		{
