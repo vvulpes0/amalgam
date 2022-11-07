@@ -50,13 +50,14 @@ libsmonoid.a : sm_istlltriv.o sm_islltriv.o
 libsmonoid.a : sm_istlrtriv.o sm_islrtriv.o
 libsmonoid.a : sm_istlj.o sm_islj.o
 libsmonoid.a : sm_istlt.o sm_islt.o
+libsmonoid.a : sm_classifier.o
 libsmonoid.a : sm_ese.o sm_localsm.o sm_generate.o
 libsmonoid.a : sm_isacom.o sm_iscom.o sm_istn.o sm_isn.o
 libsmonoid.a : sm_istk.o sm_isk.o sm_istd.o sm_isd.o sm_istgd.o sm_isgd.o
 libsmonoid.a : sm_istriv.o sm_issemilat.o sm_isband.o sm_isda.o
 libsmonoid.a : sm_issf.o sm_ispt.o sm_isltriv.o sm_isrtriv.o
 libsmonoid.a : sm_eggbox.o sm_lrel.o sm_rrel.o
-libsmonoid.a : sm_freelist.o sm_free.o
+libsmonoid.a : sm_free.o sm_freelist.o sm_freebox.o
 	libtool -static ${LDFLAGS} -o ${.TARGET} ${.ALLSRC:M*.o}
 
 libuilist.a : ui_merge.o ui_insert.o ui_intersect.o ui_has_intersect.o
@@ -90,9 +91,11 @@ fi_ssg.o : fi_ssg.c finsa.h bmatrix.h uilist.h
 fi_todot.o : fi_todot.c dot.h finsa.h bmatrix.h uilist.h
 fi_trim.o : fi_trim.c finsa.h bmatrix.h
 
+sm_classifier.o : sm_classifier.c smonoid.h finsa.h
 sm_eggbox.o : sm_eggbox.c smonoid.h bmatrix.h uilist.h
 sm_ese.o : sm_ese.c smonoid.h
 sm_free.o : sm_free.c smonoid.h uilist.h
+sm_freebox.o : sm_freebox.c smonoid.h uilist.h
 sm_freelist.o : sm_freelist.c smonoid.h
 sm_generate.o : sm_generate.c smonoid.h finsa.h bmatrix.h uilist.h
 sm_isacom.o : sm_isacom.c smonoid.h uilist.h

@@ -1,16 +1,13 @@
 #include "smonoid.h"
 int
-sm_ese(struct eggboxes * b, int (*f)(struct eggbox *), int x)
+sm_ese(struct classifier * c, int (*f)(struct eggbox *), int x)
 {
-	if (!b) { return 1; }
-	if (x && !b->is_proper)
+	struct eggboxes * b;
+	if (!c || !c->localsm) { return 1; }
+	b = c->localsm;
+	if (x && c->semigroup == b->box)
 	{
-		struct eggbox * p = b->box;
-		while (!p->has_id) { p = p->next; }
-		if (p && p->rows == 1 && p->cols == 1 && !p->polyeggs)
-		{
-			b = b->next;
-		}
+		b = b->next;
 	}
 	for (; b; b = b->next) { if (!f(b->box)) { return 0; } }
 	return 1;

@@ -1,18 +1,18 @@
 #include "smonoid.h"
 #include "uilist.h"
 int
-sm_isk(struct eggbox * b, int x)
+sm_isk(struct classifier * b, int x)
 {
-	_Bool i;
-	_Bool ever_i = 0;
-	for (; b; b = b->next)
+	struct eggbox * p;
+	int max_allowed;
+	int num_reg = 0;
+	if (!b || (x && !b->localsm)) { return 1; }
+	max_allowed = !!(x && b->semigroup == b->localsm->box) + 1;
+	for (p = b->semigroup; p; p = p->next)
 	{
-		if (b->polyeggs) { return 0; }
-		if (b->cols != 1) { return 0; }
-		if (x && b->rows == 1 && b->has_id) { continue; }
-		i = b->groups[0];
-		if (ever_i && i) { return 0; }
-		ever_i |= i;
+		if (p->polyegg || p->polycol) { return 0; }
+		if (!p->irregular) { ++num_reg; }
+		if (num_reg > max_allowed) { return 0; }
 	}
 	return 1;
 }

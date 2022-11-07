@@ -1,16 +1,18 @@
 #include "smonoid.h"
-#include "uilist.h"
 #include <stdlib.h>
 void
-sm_free(struct eggbox * p)
+sm_free(struct classifier * p)
 {
-	struct eggbox * t;
-	while (p)
+	struct eggboxes * t;
+	if (p->localsm && p->localsm->box == p->semigroup)
 	{
-		t = p->next;
-		free(p->groups);
-		p->groups = NULL;
-		free(p);
-		p = t;
+		t = p->localsm;
+		p->localsm = t->next;
+		t->box = NULL;
+		t->next = NULL;
+		sm_freelist(t);
 	}
+	sm_freebox(p->semigroup);
+	sm_freelist(p->localsm);
+	free(p);
 }

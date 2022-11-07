@@ -3,20 +3,6 @@
 #include "bmatrix.h"
 #include "uilist.h"
 #include <stdlib.h>
-/** @private */
-struct primordial_eggbox
-{
-	/** another box, if one exists */
-	struct eggbox * next;
-	/** an array of eggs (lists of H-related elements) */
-	struct uilist ** eggs;
-	/** an array sized like \c eggs indicating which are groups */
-	_Bool * groups;
-	/** number of rows (R-classes) of eggs */
-	size_t rows;
-	/** number of columns (L-classes) of eggs */
-	size_t cols;
-};
 
 /** @private */
 struct ebvec
@@ -78,19 +64,44 @@ cluster(struct bmatrix * r)
 }
 
 static size_t
-partition_overlap(struct uilist * p, struct ebvec ** v)
+partition_overlap(struct uilist * p, struct ebvec ** v, _Bool * polyegg)
 {
-	size_t i = 0;
 	struct ebvec * a = NULL;
 	struct ebvec ** ae = &a;
 	struct ebvec * b = NULL;
 	struct ebvec ** be = &b;
 	struct ebvec * t = NULL;
+	struct uilist * x = NULL;
+	struct uilist * y = NULL;
+	size_t i = 0;
+	size_t num_elts = 0;
+	_Bool saw_polyegg = 0;
 	while (v && (*v))
 	{
 		t = (*v)->next;
 		(*v)->next = NULL;
-		if (ui_has_intersect(p, (*v)->elements))
+		x = p;
+		y = (*v)->elements;
+		num_elts = 0;
+		while ((!num_elts || (num_elts < 2 && !saw_polyegg))
+		       && x && y)
+		{
+			if (x->value < y->value)
+			{
+				x = x->next;
+				continue;
+			}
+			if (x->value > y->value)
+			{
+				y = y->next;
+				continue;
+			}
+			++num_elts;
+			x = x->next;
+			y = y->next;
+		}
+		if (num_elts > 1) { saw_polyegg = 1; }
+		if (num_elts)
 		{
 			++i;
 			(*ae) = (*v);
@@ -105,66 +116,35 @@ partition_overlap(struct uilist * p, struct ebvec ** v)
 	}
 	(*ae) = b;
 	(*v) = a;
+	if (polyegg) { *polyegg = saw_polyegg; }
 	return i;
 }
 
-static int
-fill_box(struct primordial_eggbox * e,
-         struct ebvec * rows, struct ebvec * cols,
-         struct finsa * m)
+static void
+check_regularity(struct finsa * m, struct uilist * p, struct eggbox * b)
 {
-	struct ebvec * ep;
-	struct uilist * p;
-	struct uilist * t;
-	struct uilist * z;
-	size_t c;
-	size_t r;
-	size_t s;
-	int has_id = 0;
-	if (!e || !rows || !cols || !m) { return 0; }
-	for (r = 0; r < e->rows; ++r)
+	unsigned int i;
+	if (!m || !m->graphs || !p || !b) { return; }
+	while (p && (b->irregular || !b->nonfull))
 	{
-		while (rows->elements)
+		i = p->value;
+		if (!m->graphs[i] || !m->graphs[i]->vecs
+		    || !m->graphs[i]->vecs[i])
 		{
-			t = rows->elements;
-			if (m->finals && !t->value) { has_id |= 1; }
-			rows->elements = t->next;
-			t->next = NULL;
-			ep = cols;
-			c = 0;
-			while (!ui_has_intersect(t, ep->elements)
-			       && c < e->cols)
-			{
-				ep = ep->next;
-				++c;
-			}
-			s = r * e->cols + c;
-			z = m->graphs[t->value]->vecs[t->value];
-			while (z && z->value < t->value)
-			{
-				z = z->next;
-			}
-			if (z && z->value == t->value)
-			{
-				e->groups[s] |= 1;
-			}
-			if (e->eggs[s])
-			{
-				p = e->eggs[s];
-				while (p->next)
-				{
-					p = p->next;
-				}
-				p->next = t;
-			}
-			else
-			{
-				e->eggs[s] = t;
-			}
+			p = p->next;
+			continue;
 		}
-		rows = rows->next;
+		/* are we idempotent? */
+		if (m->graphs[i]->vecs[i]->value == i)
+		{
+			b->irregular = 0;
+		}
+		else
+		{
+			b->nonfull = 1;
+		}
+		p = p->next;
 	}
-	return has_id;
 }
 
 struct eggbox *
@@ -176,9 +156,10 @@ sm_eggbox(struct finsa * m)
 	struct ebvec * t;
 	struct eggbox * o = NULL;
 	struct eggbox * b;
-	struct primordial_eggbox e;
 	size_t i;
-	size_t s;
+	size_t nrows;
+	size_t ncols;
+	_Bool flag;
 	if (!m || !m->graphs || !m->count) { return NULL; }
 	mt = sm_rrel(m);
 	if (!mt) { return NULL; }
@@ -192,73 +173,33 @@ sm_eggbox(struct finsa * m)
 	mt = NULL;
 	while (rows)
 	{
-		b = malloc(sizeof(*b));
+		b = calloc(1,sizeof(*b));
 		if (!b)
 		{
 			free_ebvec(rows);
 			free_ebvec(cols);
-			sm_free(o);
+			sm_freebox(o);
 			return NULL;
 		}
 		b->next = o;
-		b->groups = 0;
-		b->rows = 0;
-		b->cols = 0;
-		b->polyeggs = 0;
-		b->has_id = 0;
-		e.next = NULL;
-		e.cols = partition_overlap(rows->elements, &cols);
-		e.rows = partition_overlap(cols->elements, &rows);
-		s = e.cols * e.rows;
-		e.eggs = malloc(s * sizeof(*(e.eggs)));
-		if (!e.eggs)
-		{
-			free(b);
-			free_ebvec(rows);
-			free_ebvec(cols);
-			sm_free(o);
-			return NULL;
-		}
-		e.groups = malloc(s * sizeof(*(e.groups)));
-		if (!e.groups)
-		{
-			free(b);
-			free(e.eggs);
-			free_ebvec(rows);
-			free_ebvec(cols);
-			sm_free(o);
-			return NULL;
-		}
-		for (i = 0; i < s; ++i)
-		{
-			e.eggs[i] = NULL;
-			e.groups[i] = 0;
-		}
-		b->has_id = fill_box(&e, rows, cols, m);
-		b->groups = e.groups;
-		e.groups = NULL;
-		b->rows = e.rows;
-		b->cols = e.cols;
-		if (e.eggs[0] && e.eggs[0]->next)
-		{
-			b->polyeggs = 1;
-		}
-		for (i = 0; i < e.rows * e.cols; ++i)
-		{
-			ui_free(e.eggs[i]);
-			e.eggs[i] = NULL;
-		}
-		free(e.eggs);
-		e.eggs = NULL;
-		for (i = 0; i < b->rows; ++i)
+		flag = 0;
+		ncols = partition_overlap(rows->elements, &cols, &flag);
+		nrows = partition_overlap(cols->elements, &rows, NULL);
+		if (flag) { b->polyegg = 1; }
+		if (nrows > 1) { b->polyrow = 1; }
+		if (ncols > 1) { b->polycol = 1; }
+		b->irregular = 1;
+		for (i = 0; i < nrows; ++i)
 		{
 			t = rows;
+			check_regularity(m, rows->elements, b);
 			ui_free(rows->elements);
 			rows->elements = NULL;
 			rows = rows->next;
 			free(t);
 		}
-		for (i = 0; i < b->cols; ++i)
+		if (b->irregular && b->nonfull) { b->nonfull = 0; }
+		for (i = 0; i < ncols; ++i)
 		{
 			t = cols;
 			ui_free(cols->elements);

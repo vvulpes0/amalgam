@@ -22,9 +22,8 @@ fill_box(struct finsa * m, unsigned int i, int *all_comm)
 	x = NULL;
 	/* restrict to v=eSe */
 	f = sm_generate(v, m);
-	/* if you care about commutativity of the semigroup,
-	 * calculate that yourself. */
-	if (all_comm && (i || !m->finals))
+	/* we should never be passing in i==0, this is fine */
+	if (all_comm)
 	{
 		*all_comm = *all_comm && !!sm_iscom(f);
 	}
@@ -54,7 +53,7 @@ sm_localsm(struct finsa * m, int * all_comm)
 	if (!idempotents) { return NULL; }
 	boxes = malloc(m->count * sizeof(*boxes));
 	if (!boxes) { free(idempotents); return NULL; }
-	for (i = 0; i < m->count; ++i)
+	for (i = 1; i < m->count; ++i)
 	{
 		if (!m->graphs[i] || !m->graphs[i]->vecs)
 		{
@@ -71,14 +70,13 @@ sm_localsm(struct finsa * m, int * all_comm)
 			sm_freelist(o);
 			return NULL;
 		}
-		(*oe)->is_proper = (i || !m->finals);
 		(*oe)->next = NULL;
 		(*oe)->box = NULL;
 		boxes[num_idempotents] = &((*oe)->box);
 		idempotents[num_idempotents++] = i;
 		oe = &((*oe)->next);
 	}
-	/* fill the structure for each idempotent */
+	/* fill the structure for each nonidentity idempotent */
 	int ac = all_comm ? *all_comm : 1;
 	#pragma omp parallel for reduction (&&:ac)
 	for (i = 0; i < num_idempotents; ++i)

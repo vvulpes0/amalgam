@@ -5,7 +5,7 @@ sm_isltriv(struct eggbox * b)
 {
 	for (; b; b = b->next)
 	{
-		if (b->polyeggs || b->rows != 1) { return 0; }
+		if (b->polyegg || b->polyrow) { return 0; }
 	}
 	return 1;
 }

@@ -7,7 +7,7 @@ sm_freelist(struct eggboxes * p)
 	while (p)
 	{
 		t = p->next;
-		sm_free(p->box);
+		sm_freebox(p->box);
 		free(p);
 		p = t;
 	}

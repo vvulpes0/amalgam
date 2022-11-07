@@ -3,17 +3,9 @@
 int
 sm_isda(struct eggbox * b)
 {
-	size_t r;
-	_Bool i;
 	for (; b; b = b->next)
 	{
-		if (b->polyeggs) { return 0; }
-		i = b->groups[0];
-		for (r = 0; r < b->rows * b->cols; ++r)
-		{
-			/* unmatched idempotency */
-			if (b->groups[r] != i) { return 0; }
-		}
+		if (b->polyegg || b->nonfull) { return 0; }
 	}
 	return 1;
 }

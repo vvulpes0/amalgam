@@ -5,7 +5,7 @@ sm_issf(struct eggbox * b)
 {
 	for (; b; b = b->next)
 	{
-		if (b->polyeggs) { return 0; }
+		if (b->polyegg) { return 0; }
 	}
 	return 1;
 }

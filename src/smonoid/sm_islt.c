@@ -1,6 +1,6 @@
 #include "smonoid.h"
 int
-sm_islt(struct eggboxes * b, int x)
+sm_islt(struct classifier * b, int x)
 {
 	return sm_ese(b, sm_issemilat, x);
 }
