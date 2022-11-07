@@ -138,6 +138,7 @@ main(void)
 	struct uilist u;
 	int issl = 0;
 	int istsl = 0;
+	int lcomm = 0;
 	u.next = NULL;
 	u.value = 0;
 	/* read the rest of stdin so writers don't die */
@@ -180,14 +181,14 @@ main(void)
 			invalidate(e, &r, 0, 1, es->box != c->semigroup);
 		}
 	}
+	r.Acom = r.Acom && c->comm;
+	lcomm = c->plcomm&&((c->semigroup == c->localsm->box)||c->comm);
+	r.LTT  = r.LTT && lcomm;
+	r.TLTT = r.TLTT && c->plcomm;
 
 	printf("%12s%4s%4s %4s\n","","V","LV","TLV");
 	static char const * const format = "%12s%4c%4c%4c\n";
-	printf(format, "Commutative",
-	       b(c->comm),
-	       b(c->plcomm && (c->semigroup != c->localsm->box
-	                       || c->comm)),
-	       b(c->plcomm));
+	printf(format, "Commutative", b(c->comm), b(lcomm), b(c->plcomm));
 	printf(format, "SF", b(r.SF), ' ', ' ');
 	printf(format, "DA", b(r.DA), b(r.LDA), b(r.TLDA));
 	printf(format, "L-trivial", b(r.L), b(r.LL), b(r.TLL));
