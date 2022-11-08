@@ -16,7 +16,7 @@ fi_issl(struct finsa * m)
 	psg = fi_powerset(m, p, POLY);
 	ui_free(p);
 	p = NULL;
-	if (!psg || !psg->graphs || !psg->count) { return 0; }
+	if (!psg || !psg->graphs || !psg->count) { return 1; }
 	for (i = 1; i < psg->count; ++i)
 	{
 		bx_add(psg->graphs[0], psg->graphs[i]);

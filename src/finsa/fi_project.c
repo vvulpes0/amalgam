@@ -29,6 +29,7 @@ fi_project(struct finsa * m)
 		t = m->graphs[i];
 		m->graphs[i] = m->graphs[m->count - n];
 		m->graphs[m->count - n] = t;
+		--i;
 	}
 	for (i = m->count - n; i < m->count; ++i)
 	{
