@@ -110,6 +110,18 @@ void fi_rmeps(struct finsa * M, int e);
 struct finsa * fi_powerset(struct finsa * M, struct uilist * V,
                            enum finality z);
 
+/** @brief Pair-graph construction.
+ *
+ * Incrementally construct a graph (as a matrix) whose nodes
+ * correspond to pairs of distinct states of \p M.
+ * An edge exists between states \a a and \a b iff
+ * there is a symbol \s mapping the first state of \a a to that of \a b
+ * and also the second state of \a a to that of \a b.
+ * @param[in] M the base automaton
+ * @return the pair-graph
+ */
+struct bmatrix * fi_dblgraph(struct finsa * M);
+
 /** @brief Construct a syntactic monoid.
  *
  * The syntactic monoid is an algebraic structure

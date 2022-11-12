@@ -27,6 +27,6 @@ main(void)
 	fi_free(m);
 	m = NULL;
 	sm_todot(stdout, box);
-	sm_free(box);
+	sm_freebox(box);
 	return EXIT_SUCCESS;
 }
